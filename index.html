@@ -1412,7 +1412,7 @@
             unlocked: false,
             recoilEnabled: false,
             recoilStrength: 5,
-            triggerKey: localStorage.getItem('recoil_trigger') || 'LButton',
+            triggerKey: localStorage.getItem('recoil_trigger') || 'LBUTTON',
             toggleKey: localStorage.getItem('recoil_toggle') || 'F1',
             recordingFor: null,
             ahkProcess: null,
@@ -1484,7 +1484,6 @@
             },
 
             startRecoilAHK: () => {
-                SoftAim.stopRecoilAHK();
                 SoftAim.recoilEnabled = true;
 
                 // Map Electron/JS keys to AHK keys
@@ -1498,29 +1497,27 @@
                 };
 
                 const ahkTrigger = mapKey(SoftAim.triggerKey);
-                const ahkToggle = mapKey(SoftAim.toggleKey);
 
                 const template = localStorage.getItem('ahk_script_template') || `
-    #NoTrayIcon
-    SetMouseDelay -1
+#NoTrayIcon
+SetMouseDelay -1
 
-    strength := {{strength}}
+strength := {{strength}}
 
-    ~$*{{trigger}}::
+~$*{{trigger}}::
     While GetKeyState("{{trigger}}", "P")
     {
-    DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
-    Sleep 15
+        DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
+        Sleep 15
     }
-    return
+return
 
-    F8::ExitApp
-    `.trim();
+F8::ExitApp
+                `.trim();
 
                 engine.parseAndRender(template, {
                     strength: SoftAim.recoilStrength,
-                    trigger: ahkTrigger,
-                    toggle: ahkToggle
+                    trigger: ahkTrigger
                 }).then(script => {
                     const scriptPath = path.join(__dirname, "Sf.ahk");
                     fs.writeFileSync(scriptPath, script);
@@ -1766,32 +1763,30 @@
                     const info = await Hardware.init();
 
                     port.innerHTML = `
-        < div class="grid-2 mb-4">
-            <div class="card hero-section">
-                <p style="color:var(--text-muted); max-width:400px; margin-bottom:20px;">
-                    System Analysis complete. 421 potential optimizations found for your ${info.gpu}.
-                </p>
-                <button class="reg-btn" onclick="RegistrySim.start()">
-                    <i class="fab fa-windows"></i> Apply Registry Tweaks
-                </button>
-            </div>
-            <div class="grid-2">
-                <div class="card">
-                    <div class="hw-icon" style="background:rgba(37, 99, 235, 0.1); color:var(--primary);"><i
-                            class="fas fa-microchip"></i></div>
-                    <div class="stat-value" id="cpu-val">--%</div>
-                    <div class="stat-sub">CPU Load</div>
-                    <canvas id="chart-cpu" style="height:50px; margin-top:10px;"></canvas>
+                <div class="grid-2 mb-4" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div class="card hero-section" style="padding:40px; background:linear-gradient(135deg, rgba(37,99,235,0.1) 0%, transparent 100%);">
+                        <p style="color:var(--text-muted); max-width:400px; margin-bottom:20px;">
+                            System Analysis complete. 421 potential optimizations found for your ${info.gpu}.
+                        </p>
+                        <button class="reg-btn" onclick="RegistrySim.start()">
+                            <i class="fab fa-windows"></i> Apply Registry Tweaks
+                        </button>
+                    </div>
+                    <div class="grid-2" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                        <div class="card">
+                            <div class="hw-icon" style="background:rgba(37, 99, 235, 0.1); color:var(--primary);"><i class="fas fa-microchip"></i></div>
+                            <div class="stat-value" id="cpu-val">--%</div>
+                            <div class="stat-sub">CPU Load</div>
+                            <canvas id="chart-cpu" style="height:50px; margin-top:10px;"></canvas>
+                        </div>
+                        <div class="card">
+                            <div class="hw-icon" style="background:rgba(16, 185, 129, 0.1); color:#10b981;"><i class="fas fa-memory"></i></div>
+                            <div class="stat-value" id="ram-val">--%</div>
+                            <div class="stat-sub">RAM Usage</div>
+                            <canvas id="chart-ram" style="height:50px; margin-top:10px;"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="hw-icon" style="background:rgba(16, 185, 129, 0.1); color:#10b981;"><i
-                            class="fas fa-memory"></i></div>
-                    <div class="stat-value" id="ram-val">--%</div>
-                    <div class="stat-sub">RAM Usage</div>
-                    <canvas id="chart-ram" style="height:50px; margin-top:10px;"></canvas>
-                </div>
-            </div>
-            </div>
 
             <h3 style="margin-bottom:15px; font-size:14px; color:var(--text-dark); text-transform:uppercase;">Hardware
                 Information</h3>
@@ -1960,11 +1955,12 @@
                     hdr.innerText = "SCANNING DRIVERS...";
 
                     // Show loading
-                    port.innerHTML = `< div class="flex-center" style="height:100%; flex-direction:column; color:#9ca3af;">
-                    <i class="fas fa-usb fa-bounce"
-                        style="font-size:30px; margin-bottom:20px; color:var(--primary)"></i>
-                    <p>Detecting Installed Drivers...</p>
-                    </div> `;
+                    port.innerHTML = `
+                        <div class="flex-center" style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#9ca3af;">
+                            <i class="fas fa-usb fa-bounce" style="font-size:30px; margin-bottom:20px; color:var(--primary)"></i>
+                            <p>Detecting Installed Drivers...</p>
+                        </div>
+                    `;
 
                     // Fetch all drivers using WMIC
                     const driversPromise = new Promise((resolve) => {
@@ -2173,25 +2169,21 @@
                         hdr.innerText = "SOFTAIM & RECOIL CONTROL";
                         port.innerHTML = `
                         <div class="card"
-                            style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, rgba(16,185,129,0.08) 0%, transparent 100%); border-color:rgba(16,185,129,0.2);">
-                            <div>
-                                <h3 style="margin-bottom:5px; color:#10b981;"><i class="fas fa-microchip"></i> Premium
-                                    Engine Status</h3>
-                                <p style="font-size:12px; color:var(--text-muted);">Cloud-synced & kernel-hooked
-                                    (v4.2.1)</p>
-                            </div>
-                            <div class="status-badge status-undetected"
-                                style="font-size:12px; padding:8px 20px; box-shadow:0 0 15px rgba(16,185,129,0.2);">
-                                <i class="fas fa-shield-check"></i> FULL UNDETECTED +
+                            style="margin-bottom:20px; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.02);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <h3 style="margin-bottom:5px; color:#10b981; font-size:16px;"><i class="fas fa-shield-check"></i> SERVICE STATUS: UNDETECTED</h3>
+                                    <p style="font-size:12px; color:var(--text-muted);">Kernel scaling active. Cloud-synced v${APP_VERSION}</p>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px; background:#10b981; color:#fff; padding:6px 15px; border-radius:100px; font-weight:800; font-size:11px; box-shadow:0 0 15px rgba(16,185,129,0.4);">
+                                    <i class="fas fa-check-circle"></i> FULL PROTECTED +
+                                </div>
                             </div>
                         </div>
 
-                        <div class="weapon-card" style="position:relative; overflow:hidden;">
-                            <div
-                                style="position:absolute; top:10px; right:15px; font-size:10px; color:var(--text-dark); text-transform:uppercase; letter-spacing:1px; font-weight:800;">
-                                Module: Recoil Control</div>
+                        <div class="weapon-card" style="position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.05); padding:25px; border-radius:15px; background:rgba(255,255,255,0.02); display:flex; gap:25px; align-items:center;">
                             <div class="weapon-icon-box"
-                                style="border-color:rgba(37,99,235,0.3); background:rgba(37,99,235,0.05); width:140px; height:140px;">
+                                style="border: 2px solid rgba(37,99,235,0.3); background:rgba(37,99,235,0.05); width:140px; height:140px; border-radius:15px; display:flex; align-items:center; justify-content:center; position:relative;">
                                 <i class="fas fa-crosshairs fa-spin"
                                     style="font-size:60px; color:var(--primary); opacity:0.05; position:absolute;"></i>
                                 <i class="fas fa-gun"
@@ -2200,20 +2192,21 @@
                             <div style="flex:1;">
                                 <div
                                     style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                                    <h3 style="font-size:20px; display:flex; align-items:center; gap:10px;">
-                                        Recoil Mode <span id="recoil-status-label"
-                                            style="font-size:10px; background:rgba(255,255,255,0.05); padding:3px 8px; border-radius:4px; color:var(--text-muted);">SUPPORTED:
-                                            AR / M16</span>
-                                    </h3>
-                                    <div style="display:flex; gap:10px;">
+                                    <div>
+                                        <h3 style="font-size:22px; margin-bottom:2px;">Recoil Compensation</h3>
+                                        <p style="font-size:11px; color:var(--text-muted);">Supported: Assault Rifles, SMGs, Pistols</p>
+                                    </div>
+                                    <div style="display:flex; gap:10px; background:rgba(0,0,0,0.3); padding:5px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
                                         <button class="softaim-btn enable"
-                                            style="padding:8px 20px; font-size:12px; ${SoftAim.recoilEnabled ? 'opacity:1; box-shadow:0 0 20px rgba(16,185,129,0.4); border-color:#10b981;' : 'opacity:0.3;'}"
-                                            onclick="SoftAim.toggleRecoil(true)">
-                                            <i class="fas fa-play"></i> ENABLE
+                                            style="padding:10px 25px; font-size:12px; transition:0.3s; border-radius:8px; font-weight:700; cursor:pointer;"
+                                            ${SoftAim.recoilEnabled ? 'disabled style="background:rgba(16,185,129,0.1); color:#10b981; border:1px solid rgba(16,185,129,0.3); opacity:0.5; cursor:not-allowed;"' : 'style="background:transparent; color:var(--text-muted); border:1px solid transparent;" onclick="SoftAim.toggleRecoil(true)"'}
+                                            >
+                                            <i class="fas fa-power-off"></i> ENABLE
                                         </button>
                                         <button class="softaim-btn disable"
-                                            style="padding:8px 20px; font-size:12px; ${!SoftAim.recoilEnabled ? 'opacity:1; box-shadow:0 0 20px rgba(239,68,68,0.2); border-color:#ef4444;' : 'opacity:0.3;'}"
-                                            onclick="SoftAim.stopRecoilAHK()">
+                                            style="padding:10px 25px; font-size:12px; transition:0.3s; border-radius:8px; font-weight:700; cursor:pointer;"
+                                            ${!SoftAim.recoilEnabled ? 'disabled style="background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); opacity:0.5; cursor:not-allowed;"' : 'style="background:transparent; color:var(--text-muted); border:1px solid transparent;" onclick="SoftAim.toggleRecoil(false)"'}
+                                            >
                                             <i class="fas fa-stop"></i> DISABLE
                                         </button>
                                     </div>
@@ -2222,8 +2215,7 @@
                                 <div
                                     style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px; border:1px solid var(--border-subtle); margin-bottom:15px;">
                                     <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                                        <span style="font-size:13px; color:var(--text-main); font-weight:700;">Recoil
-                                            Strength (PULL DOWN)</span>
+                                        <span style="font-size:13px; color:var(--text-main); font-weight:700;">Recoil Strength (Y-Axis)</span>
                                         <span id="recoil-val"
                                             style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:900; background:rgba(37,99,235,0.15); padding:4px 12px; border-radius:6px; border:1px solid rgba(37,99,235,0.3);">${SoftAim.recoilStrength}</span>
                                     </div>
@@ -2233,67 +2225,21 @@
                                 </div>
 
                                 <div
-                                    style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:15px;">
+                                    style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
                                     <div
                                         style="background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                         <div
                                             style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:5px;">
-                                            Trigger Key</div>
+                                            Execution Binder</div>
                                         <div class="build-key-btn" style="height:35px; font-size:11px;"
                                             onclick="SoftAim.startRecord('trigger', this)">${SoftAim.triggerKey}</div>
                                     </div>
                                     <div
-                                        style="background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
-                                        <div
-                                            style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:5px;">
-                                            Toggle Hotkey</div>
-                                        <div class="build-key-btn" style="height:35px; font-size:11px;"
-                                            onclick="SoftAim.startRecord('toggle', this)">${SoftAim.toggleKey}</div>
+                                        style="background:rgba(255,255,255,0.03); padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:center;">
+                                        <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:5px;">Emergency Key</div>
+                                        <div style="color:var(--warning); font-weight:900; font-size:14px; font-family:monospace;">F8 (KILL APP)</div>
                                     </div>
                                 </div>
-
-                                <div style="display:flex; gap:20px; padding-left:5px;">
-                                    <div
-                                        style="font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
-                                        <div
-                                            style="width:6px; height:6px; background:var(--warning); border-radius:50%;">
-                                        </div> EMERGENCY STOP: <span
-                                            style="color:var(--warning); font-weight:800;">F8</span>
-                                    </div>
-                                    <div
-                                        style="font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
-                                        <div
-                                            style="width:6px; height:6px; background:var(--primary); border-radius:50%;">
-                                        </div> STATUS: <span
-                                            style="color:var(--primary); font-weight:800;">UNDETECTED</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                            <div class="card"
-                                style="text-align:center; padding:30px; border:1px solid rgba(16,185,129,0.1); background:linear-gradient(135deg, rgba(16,185,129,0.03) 0%, transparent 100%);">
-                                <i class="fas fa-crosshairs"
-                                    style="font-size:36px; color:#10b981; margin-bottom:15px; filter:drop-shadow(0 0 10px rgba(16,185,129,0.4));"></i>
-                                <h4 style="margin-bottom:10px; font-size:16px;">SoftAim Enable</h4>
-                                <p
-                                    style="font-size:11px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">
-                                    Kernel-level pixel scaling with humanized smoothing logic.</p>
-                                <button class="softaim-btn enable"
-                                    style="width:100%; padding:12px; background:#10b981;">ACTIVATE MODULE</button>
-                            </div>
-                            <div class="card"
-                                style="text-align:center; padding:30px; border:1px solid rgba(239,68,68,0.1); background:linear-gradient(135deg, rgba(239,68,68,0.03) 0%, transparent 100%);">
-                                <i class="fas fa-user-ninja"
-                                    style="font-size:36px; color:#ef4444; margin-bottom:15px; filter:drop-shadow(0 0 10px rgba(239,68,68,0.4));"></i>
-                                <h4 style="margin-bottom:10px; font-size:16px;">SoftAim Disable</h4>
-                                <p
-                                    style="font-size:11px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">
-                                    Immediately kill all aiming processes and clear kernel hooks.</p>
-                                <button class="softaim-btn disable"
-                                    style="width:100%; padding:12px; background:#ef4444;"
-                                    onclick="SoftAim.stopRecoilAHK()">DEACTIVATE MODULE</button>
                             </div>
                         </div>
                         `;
@@ -2564,19 +2510,22 @@
 
             checkAndSync: async () => {
                 const wasUpdated = localStorage.getItem('update_success');
-                UpdateUI.show(wasUpdated ? "Update Successfully Applied" : "Checking for Updates");
-
                 if (wasUpdated) {
+                    UpdateUI.show("Update Successfully Applied");
                     UpdateUI.update(100, "Version " + APP_VERSION + " is now active.");
                     localStorage.removeItem('update_success');
-                    setTimeout(() => UpdateUI.hide(), 2000);
+                    setTimeout(() => {
+                        UpdateUI.hide();
+                        Auth.checkSaved(); // Proceed to Login
+                    }, 3000);
                     CloudDB.startBackgroundCheck();
                     return;
                 }
 
+                UpdateUI.show("Checking for Updates");
                 try {
                     const vResp = await fetch(CloudDB.versionUrl + '?t=' + Date.now());
-                    if (!vResp.ok) throw new Error("Server communication failure");
+                    if (!vResp.ok) throw new Error("Server failure");
 
                     const data = await vResp.json();
                     UpdateUI.update(30, "Checking Integrity: v" + data.version);
@@ -2584,6 +2533,7 @@
                     if (data.version && data.version !== APP_VERSION && data.update) {
                         await CloudDB.applyUpdate(data.version);
                     } else {
+                        // No update found
                         UpdateUI.update(60, "Syncing Weapon Scripts");
                         const aResp = await fetch(CloudDB.ahkUrl + '?t=' + Date.now());
                         if (aResp.ok) {
@@ -2591,12 +2541,18 @@
                             if (template.trim()) localStorage.setItem('ahk_script_template', template);
                         }
                         UpdateUI.update(100, "No Updates Found: System Up-to-Date");
-                        setTimeout(() => UpdateUI.hide(), 1500);
+                        setTimeout(() => {
+                            UpdateUI.hide();
+                            Auth.checkSaved(); // Proceed to Login
+                        }, 3000);
                         CloudDB.startBackgroundCheck();
                     }
                 } catch (e) {
-                    UpdateUI.update(100, "Offline Mode Enabled");
-                    setTimeout(() => UpdateUI.hide(), 1000);
+                    UpdateUI.update(100, "Secure Connection Established (Offline)");
+                    setTimeout(() => {
+                        UpdateUI.hide();
+                        Auth.checkSaved(); // Proceed to Login
+                    }, 2000);
                 }
             },
 
@@ -2641,11 +2597,10 @@
         };
 
         window.onload = () => {
-            // Mandatory startup update check
+            // Mandatory startup update check (which now proceeds to login)
             CloudDB.checkAndSync();
 
             // Initialize App
-            Auth.checkSaved();
             AutoWall.init();
 
             const deviceNameEl = document.getElementById('device-name');
