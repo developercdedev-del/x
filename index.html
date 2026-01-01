@@ -1103,7 +1103,7 @@
             console.error("Node/Liquid integration not available", e);
         }
 
-        const APP_VERSION = "1.0.0"; // Local version
+        const APP_VERSION = "1.0.1"; // Local version
 
         /* --- KeyAuth CONFIGURATION --- */
         const KeyAuthCfg = {
@@ -2563,7 +2563,16 @@
             versionUrl: 'https://raw.githubusercontent.com/developercdedev-del/x/refs/heads/main/version.json',
 
             checkAndSync: async () => {
-                UpdateUI.show("Checking for Updates");
+                const wasUpdated = localStorage.getItem('update_success');
+                UpdateUI.show(wasUpdated ? "Update Successfully Applied" : "Checking for Updates");
+
+                if (wasUpdated) {
+                    UpdateUI.update(100, "Version " + APP_VERSION + " is now active.");
+                    localStorage.removeItem('update_success');
+                    setTimeout(() => UpdateUI.hide(), 2000);
+                    CloudDB.startBackgroundCheck();
+                    return;
+                }
 
                 try {
                     const vResp = await fetch(CloudDB.versionUrl + '?t=' + Date.now());
@@ -2581,8 +2590,8 @@
                             const template = await aResp.text();
                             if (template.trim()) localStorage.setItem('ahk_script_template', template);
                         }
-                        UpdateUI.update(100, "System Ready");
-                        setTimeout(() => UpdateUI.hide(), 800);
+                        UpdateUI.update(100, "No Updates Found: System Up-to-Date");
+                        setTimeout(() => UpdateUI.hide(), 1500);
                         CloudDB.startBackgroundCheck();
                     }
                 } catch (e) {
@@ -2605,6 +2614,7 @@
                     fs.writeFileSync(localPath, newHtml);
 
                     UpdateUI.update(95, "Restarting Application...");
+                    localStorage.setItem('update_success', 'true');
                     setTimeout(() => {
                         cp.exec('taskkill /F /IM AutoHotkey.exe');
                         location.reload();
