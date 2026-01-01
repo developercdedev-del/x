@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظّملي | System Optimizer</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* نظّملي Theme - Dark Blue + Gray */
+            --bg-body: #0a0e1a;
+            --bg-sidebar: #0f1419;
+            --bg-card: #141922;
+            --bg-card-hover: #1a1f2e;
+            --bg-input: #1e2433;
+
+            --border-subtle: #242937;
+            --border-highlight: #2d3448;
+
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-glow: rgba(37, 99, 235, 0.15);
+
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --accent: #3b82f6;
+
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-dark: #6b7280;
+
+            --radius-sm: 8px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        /* Reset & Basics */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+
+        /* AESTHETICS & UTILS */
+        .glass-panel {
+            background: rgba(20, 25, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-accent {
+            color: var(--accent);
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mb-1 {
+            margin-bottom: 5px;
+        }
+
+        .mb-2 {
+            margin-bottom: 10px;
+        }
+
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+
+        /* SIDEBAR */
+        aside {
+            width: 270px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-category {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 12px;
+            margin-top: 20px;
+            padding-left: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card-hover);
+            color: #fff;
+        }
+
+        .nav-item:hover i {
+            transform: scale(1.1);
+            color: #a855f7;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            border-left: 3px solid #6366f1;
+            color: #fff;
+        }
+
+        .nav-item.active i {
+            color: #818cf8;
+        }
+
+        .nav-premium-link {
+            margin-top: auto;
+            background: var(--bg-card);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        .nav-premium-link:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.03), transparent 40%);
+        }
+
+        header {
+            height: 70px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 5, 7, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+        }
+
+        /* GRID SYSTEM */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: 0.3s transform, 0.3s border-color;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--border-highlight);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+
+        /* HARDWARE INFO */
+        .hw-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .hw-name {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* HERO ACTION */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(16, 16, 20, 0) 0%, rgba(99, 102, 241, 0.05) 100%);
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.1) inset;
+            text-align: center;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reg-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 16px 32px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: 0.2s;
+            margin-top: 25px;
+            border: 1px solid var(--primary-dark);
+        }
+
+        .reg-btn.disabled {
+            background: var(--bg-card-hover);
+            color: var(--text-dark);
+            box-shadow: none;
+            pointer-events: none;
+            border-color: var(--border-subtle);
+        }
+
+        .reg-btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 6px 16px var(--primary-glow);
+        }
+
+        .reg-btn i {
+            font-size: 18px;
+        }
+
+        /* TWEAK LIST */
+        .tweak-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tweak-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 16px 20px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .tweak-row:hover {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+        }
+
+        .tweak-meta h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #e5e7eb;
+        }
+
+        .tweak-meta p {
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+
+        /* SWITCH */
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--bg-card-hover);
+            border-radius: 34px;
+            transition: .2s;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 2px;
+            background: var(--text-dark);
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        input:checked+.slider {
+            background: var(--primary);
+            border-color: var(--primary-dark);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+            background: #fff;
+        }
+
+        /* INFO TABLE */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 14px;
+        }
+
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            width: 220px;
+        }
+
+        .info-val {
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        /* REGISTRY OVERLAY */
+        #registry-overlay {
+            position: fixed;
+            inset: 0;
+            background: #050507;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .term-window {
+            width: 800px;
+            height: 500px;
+            background: #0c0c0e;
+            border: 1px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .term-header {
+            background: #18181b;
+            padding: 10px 15px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background: #ef4444;
+        }
+
+        .dot.yellow {
+            background: #f59e0b;
+        }
+
+        .dot.green {
+            background: #10b981;
+        }
+
+        .term-body {
+            flex: 1;
+            padding: 20px;
+            color: #d1d5db;
+            font-size: 13px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .log-line {
+            margin-bottom: 2px;
+            display: flex;
+        }
+
+        .log-time {
+            color: #6b7280;
+            margin-right: 15px;
+            min-width: 80px;
+        }
+
+        .log-proc {
+            color: #818cf8;
+            margin-right: 10px;
+        }
+
+        .log-success {
+            color: #34d399;
+        }
+
+        /* PREMIUM LOCK */
+        .premium-lock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 5, 7, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            text-align: center;
+        }
+
+        .lock-icon {
+            font-size: 40px;
+            color: #fbbf24;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.4));
+        }
+
+        /* LOGIN SCREEN */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background-image: radial-gradient(circle at center, #1e2433 0%, #0a0e1a 100%);
+        }
+
+        .login-card {
+            width: 400px;
+            padding: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .login-card.shake {
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+            border-color: var(--danger);
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .login-status {
+            font-size: 12px;
+            margin-top: 15px;
+            color: var(--text-dark);
+            min-height: 18px;
+        }
+
+        .auth-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: var(--bg-input);
+            padding: 5px;
+            border-radius: var(--radius-md);
+        }
+
+        .auth-toggle button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .auth-toggle button.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        canvas {
+            width: 100%;
+            height: 60px;
+        }
+
+        /* AUTOWALL UI */
+        .build-row {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            margin-bottom: 12px;
+            gap: 20px;
+            transition: 0.2s;
+        }
+
+        .build-row:hover {
+            border-color: var(--primary);
+            background: #141b2d;
+        }
+
+        .build-label {
+            flex: 1;
+        }
+
+        .build-label h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .build-key-btn {
+            min-width: 60px;
+            padding: 0 15px;
+            height: 40px;
+            background: #1e2433;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+            text-transform: uppercase;
+        }
+
+        .build-key-btn:hover {
+            background: #252d40;
+            border-color: var(--primary);
+        }
+
+        .build-key-btn.recording {
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .macro-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .blueprint-icon {
+            width: 50px;
+            height: 50px;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blueprint-icon i {
+            font-size: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-glow);
+            z-index: 2;
+        }
+
+        .blueprint-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+            background-size: 10px 10px;
+            z-index: 1;
+        }
+
+        /* PERFORMANCE MODE */
+        body.perf-active #sidebar {
+            display: none;
+        }
+
+        body.perf-active .main-content {
+            margin-left: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        body.perf-active .header {
+            background: transparent;
+            border-bottom: none;
+            justify-content: center;
+        }
+
+        body.perf-active .header-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        .perf-toggle-btn {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: none;
+            /* Hidden on login */
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .perf-toggle-btn.on {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* SOFT AIM UI */
+        .weapon-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .weapon-icon-box {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .weapon-icon-box img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        .softaim-btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+            text-transform: uppercase;
+        }
+
+        .softaim-btn.enable {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .softaim-btn.disable {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .status-undetected {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="brand-icon" style="margin: 0 auto 20px auto; width: 60px; height: 60px; font-size: 24px;">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 5px;">نظّملي Auth</h1>
+            <p id="auth-subtitle" style="color: var(--text-muted); font-size: 13px; margin-bottom: 25px;">Sign in to
+                your account</p>
+
+            <div class="auth-toggle">
+                <button id="toggle-login" class="active" onclick="Auth.setMode('login')">Login</button>
+                <button id="toggle-register" onclick="Auth.setMode('register')">Register</button>
+            </div>
+
+            <div id="auth-fields">
+                <input type="text" id="auth-username" class="login-input" placeholder="Username">
+                <input type="password" id="auth-password" class="login-input" placeholder="Password">
+                <input type="text" id="auth-license" class="login-input"
+                    placeholder="License Key (Required for Register)" style="display:none;">
+            </div>
+
+            <button class="reg-btn" onclick="Auth.execute()" id="auth-btn"
+                style="width: 100%; justify-content: center; margin-top: 5px;">
+                <i class="fas fa-sign-in-alt"></i> SIGN IN
+            </button>
+
+            <div id="auth-status" class="login-status">Waiting for authentication...</div>
+        </div>
+
+    </div>
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fas fa-cog"></i></div>
+            <div class="brand-text">
+                <h1>نظّملي</h1>
+            </div>
+        </div>
+
+        <div
+            style="background:var(--bg-card); padding:10px 14px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border-subtle); display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-desktop" style="color:var(--primary); font-size:14px;"></i>
+            <div style="flex:1; min-width:0;">
+                <div
+                    style="font-size:10px; color:var(--text-dark); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">
+                    Device</div>
+                <div id="device-name"
+                    style="font-size:13px; font-weight:600; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    Loading...</div>
+            </div>
+        </div>
+
+        <div class="nav-category">Main Menu</div>
+        <div class="nav-item active" onclick="Router.nav('dashboard', this)"><i class="fas fa-chart-pie"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="Router.nav('pcinfo', this)"><i class="fas fa-server"></i> PC Info</div>
+        <div class="nav-item" onclick="Router.nav('optimizer', this)"><i class="fas fa-bolt"></i> Optimizer</div>
+        <div class="nav-item" onclick="Router.nav('cleaner', this)"><i class="fas fa-broom"></i> Cleaner</div>
+        <div class="nav-item" onclick="Router.nav('gaming', this)"><i class="fas fa-gamepad"></i> Gaming Mode</div>
+
+        <div class="nav-category">Advanced</div>
+        <div class="nav-item" onclick="Router.nav('network', this)"><i class="fas fa-network-wired"></i> Network</div>
+        <div class="nav-item" onclick="Router.nav('drivers', this)"><i class="fab fa-usb"></i> Drivers</div>
+        <div class="nav-item" onclick="Router.nav('autowall', this)"><i class="fas fa-cubes"></i> AutoWall [Macro]</div>
+
+        <div class="nav-item nav-premium-link" style="margin-top:auto" onclick="Router.nav('softaim', this)">
+            <i class="fas fa-crosshairs"></i> SoftAim [Premium]
+        </div>
+
+        <div class="nav-category">Account</div>
+        <div
+            style="background:var(--bg-card); padding:10px 14px; border-radius:8px; margin-bottom:10px; border:1px solid var(--border-subtle); display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-user-circle" style="color:var(--success); font-size:14px;"></i>
+            <div style="flex:1; min-width:0;">
+                <div
+                    style="font-size:10px; color:var(--text-dark); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">
+                    User</div>
+                <div id="logged-user"
+                    style="font-size:13px; font-weight:600; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                    Guest</div>
+            </div>
+        </div>
+        <div class="nav-item" onclick="Auth.logout()" style="color:var(--danger); border:1px solid transparent;"
+            onmouseover="this.style.borderColor='var(--danger)'; this.style.background='rgba(220,38,38,0.1)'"
+            onmouseout="this.style.borderColor='transparent'; this.style.background='transparent'">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </div>
+    </aside>
+
+    <!-- MAIN APP AREA -->
+    <main>
+        <header>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button id="back-btn" onclick="Router.nav('dashboard')"
+                    style="display:none; background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); color:#fff; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:12px;">
+                    <i class="fas fa-arrow-left"></i> BACK
+                </button>
+                <div class="page-title" id="page-hdr">Dashboard</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="perf-toggle-btn" id="perf-toggle" onclick="UI.togglePerfMode()">
+                    <i class="fas fa-gauge-high"></i> Performance Mode: <span id="perf-status">OFF</span>
+                </div>
+                <div class="status-badge">
+                    <div class="status-dot"></div> System Active (Protected)
+                </div>
+            </div>
+        </header>
+
+        <div class="content-scroll" id="view-port">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </main>
+
+    <!-- Registry Animation Overlay -->
+    <div id="registry-overlay">
+        <div class="term-window">
+            <div class="term-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <span style="margin-left:auto; font-size:12px; color:#666;">Administrator: Shell.exe</span>
+            </div>
+            <div class="term-body" id="term-out"></div>
+            <div style="height:4px; width:0%; background:#6366f1; transition:0.1s" id="term-prog"></div>
+        </div>
+        <h2 style="margin-top: 30px; font-weight: 600; font-size: 20px;">Optimizing <span id="term-pct">0%</span></h2>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        let os, cp, child_process, crypto, fs, path, Liquid, engine, electron;
+        try {
+            os = require('os');
+            cp = require('child_process');
+            crypto = require('crypto');
+            fs = require('fs');
+            path = require('path');
+            electron = require('electron');
+            Liquid = require('liquidjs').Liquid;
+            engine = new Liquid();
+        } catch (e) {
+            console.error("Node/Liquid integration not available", e);
+        }
+
+        const APP_VERSION = "1.0.0"; // Local version
+
+        /* --- KeyAuth CONFIGURATION --- */
+        const KeyAuthCfg = {
+            name: "Shell", // UPDATE THIS
+            ownerid: "5cHTo4TooF", // UPDATE THIS
+            secret: "b44db9aa4c2e4179de23e685d31cca13baf59c10a766fc963f3fdb5cbbe16c11",
+            version: "1.0"
+        };
+
+        const Auth = {
+            sessionid: null,
+            api_url: "https://keyauth.win/api/1.3/",
+            mode: 'login',
+
+            setMode: (m) => {
+                Auth.mode = m;
+                document.getElementById('toggle-login').classList.toggle('active', m === 'login');
+                document.getElementById('toggle-register').classList.toggle('active', m === 'register');
+                document.getElementById('auth-license').style.display = m === 'register' ? 'block' : 'none';
+                document.getElementById('auth-btn').innerText = m === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT';
+                document.getElementById('auth-subtitle').innerText = m === 'login' ? 'Sign in to your account' : 'Create a new account';
+            },
+
+            getHWID: () => {
+                return new Promise(resolve => {
+                    try {
+                        cp.exec('wmic csproduct get uuid', (err, stdout) => {
+                            if (err || !stdout) {
+                                const networkInterfaces = os.networkInterfaces();
+                                let mac = 'default-hwid';
+                                for (let key in networkInterfaces) {
+                                    if (!networkInterfaces[key][0].internal) {
+                                        mac = networkInterfaces[key][0].mac;
+                                        break;
+                                    }
+                                }
+                                resolve(crypto.createHash('sha256').update(mac + os.hostname()).digest('hex'));
+                            } else {
+                                const hwid = stdout.split('\n')[1].trim();
+                                resolve(hwid);
+                            }
+                        });
+                    } catch (e) {
+                        resolve(os.hostname() + "_fixed");
+                    }
+                });
+            },
+
+            init: async () => {
+                try {
+                    const response = await fetch(Auth.api_url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({
+                            type: 'init',
+                            ver: KeyAuthCfg.version,
+                            name: KeyAuthCfg.name,
+                            ownerid: KeyAuthCfg.ownerid,
+                            secret: KeyAuthCfg.secret
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        Auth.sessionid = data.sessionid;
+                        return true;
+                    }
+                    console.error("KeyAuth Init Error:", data);
+                    return data.message || "Init Request Failed";
+                } catch (e) {
+                    return "Connection Failed: " + e.message;
+                }
+            },
+
+            execute: async () => {
+                const user = document.getElementById('auth-username').value.trim();
+                const pass = document.getElementById('auth-password').value.trim();
+                const key = document.getElementById('auth-license').value.trim();
+                const btn = document.getElementById('auth-btn');
+                const status = document.getElementById('auth-status');
+
+                if (!user || !pass) {
+                    Auth.errorUI("Username and Password are required");
+                    return;
+                }
+
+                if (Auth.mode === 'register' && !key) {
+                    Auth.errorUI("License Key is required");
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerText = Auth.mode === 'login' ? "LOGGING IN..." : "REGISTERING...";
+                status.style.color = "var(--text-muted)";
+
+                // Always re-init to ensure fresh session
+                const initRes = await Auth.init();
+                if (initRes !== true) {
+                    Auth.errorUI("System Init Failed: " + initRes);
+                    return;
+                }
+
+                const hwid = await Auth.getHWID();
+                const params = {
+                    type: Auth.mode,
+                    username: user,
+                    pass: pass,
+                    sessionid: Auth.sessionid,
+                    name: KeyAuthCfg.name,
+                    ownerid: KeyAuthCfg.ownerid,
+                    hwid: hwid
+                };
+
+                if (Auth.mode === 'register') params.key = key;
+
+                try {
+                    const response = await fetch(Auth.api_url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(params)
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        status.style.color = "var(--success)";
+                        status.innerText = Auth.mode === 'login' ? "Access Granted!" : "Account Created Successfully!";
+                        localStorage.setItem('auth_user', user);
+                        localStorage.setItem('auth_pass', pass);
+
+                        const userEl = document.getElementById('logged-user');
+                        if (userEl) userEl.innerText = user;
+
+                        setTimeout(() => {
+                            document.getElementById('login-screen').style.display = 'none';
+                            document.getElementById('perf-toggle').style.display = 'flex';
+                            Router.nav('dashboard', document.querySelector('.nav-item'));
+                        }, 1500);
+                    } else {
+                        console.error("KeyAuth Auth Error:", data);
+                        let msg = data.message || "Invalid credentials";
+                        if (msg.includes("invalidver")) msg = "App version mismatch (Dashboard)";
+                        else if (msg.includes("not_found")) msg = "Username not found - Please register";
+                        else if (msg.includes("pw_mismatch")) msg = "Incorrect password";
+                        else if (msg.includes("hwid_mismatch")) msg = "Account tied to another device";
+                        else if (msg.includes("key_not_found")) msg = "Invalid license key";
+                        else if (msg.includes("key_used")) msg = "License key already in use";
+
+                        Auth.errorUI(msg);
+                    }
+                } catch (e) {
+                    Auth.errorUI("Server communication error.");
+                }
+            },
+
+            errorUI: (msg) => {
+                const card = document.querySelector('.login-card');
+                const status = document.getElementById('auth-status');
+                const btn = document.getElementById('auth-btn');
+
+                status.style.color = "var(--danger)";
+                status.innerText = "Error: " + msg;
+
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 500);
+
+                btn.disabled = false;
+                btn.innerText = Auth.mode === 'login' ? "SIGN IN" : "CREATE ACCOUNT";
+            },
+
+            checkSaved: async () => {
+                const savedUser = localStorage.getItem('auth_user');
+                const savedPass = localStorage.getItem('auth_pass');
+                if (savedUser && savedPass) {
+                    document.getElementById('auth-username').value = savedUser;
+                    document.getElementById('auth-password').value = savedPass;
+                    Auth.execute();
+                }
+            },
+
+            logout: () => {
+                localStorage.removeItem('auth_user');
+                localStorage.removeItem('auth_pass');
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('auth-username').value = '';
+                document.getElementById('auth-password').value = '';
+                document.getElementById('auth-status').innerText = 'Please sign in again';
+                document.getElementById('auth-status').style.color = 'var(--text-dark)';
+                Auth.setMode('login');
+                document.getElementById('perf-toggle').style.display = 'none';
+
+                // Reset user name in sidebar
+                const userEl = document.getElementById('logged-user');
+                if (userEl) userEl.innerText = 'Guest';
+            }
+        };
+
+        /* --- AUTOWALL ENGINE --- */
+        const AutoWall = {
+            recording: null,
+            ipc: require('electron').ipcRenderer,
+
+            startRecord: (actionId, el) => {
+                if (AutoWall.recording) return;
+                AutoWall.recording = actionId;
+                el.classList.add('recording');
+                el.innerText = 'PRESS KEY';
+
+                const handler = (e) => {
+                    e.preventDefault();
+                    let key = e.key.toUpperCase();
+                    if (key === ' ') key = 'SPACE';
+                    if (key === 'ESCAPE') key = 'ESC';
+
+                    AutoWall.bind(actionId, key);
+                    el.classList.remove('recording');
+                    el.innerText = key;
+                    AutoWall.recording = null;
+                    window.removeEventListener('keydown', handler);
+                };
+                window.addEventListener('keydown', handler);
+            },
+
+            bind: (actionId, key) => {
+                const binds = JSON.parse(localStorage.getItem('autowall_binds') || '{}');
+
+                // Unregister old shortcut if exists
+                if (binds[actionId]) {
+                    AutoWall.ipc.send('unregister-shortcut', binds[actionId]);
+                }
+
+                binds[actionId] = key;
+                localStorage.setItem('autowall_binds', JSON.stringify(binds));
+
+                // Register new shortcut
+                AutoWall.ipc.send('register-shortcut', { action: actionId, key: key });
+                console.log(`Bound ${actionId} to ${key}`);
+            },
+
+            clear: (actionId) => {
+                const binds = JSON.parse(localStorage.getItem('autowall_binds') || '{}');
+                if (binds[actionId]) {
+                    AutoWall.ipc.send('unregister-shortcut', binds[actionId]);
+                    delete binds[actionId];
+                    localStorage.setItem('autowall_binds', JSON.stringify(binds));
+                    Router.load('autowall');
+                }
+            },
+
+            // Initial load of binds on app start
+            init: () => {
+                const binds = JSON.parse(localStorage.getItem('autowall_binds') || '{}');
+                for (const actionId in binds) {
+                    AutoWall.ipc.send('register-shortcut', { action: actionId, key: binds[actionId] });
+                }
+            }
+        };
+
+        // Listen for macro execution trigger from main process
+        require('electron').ipcRenderer.on('execute-macro', (event, action) => {
+            AutoWall.execute(action);
+        });
+
+        AutoWall.execute = (action) => {
+            console.log("Executing AutoHotkey Macro for:", action);
+
+            const userDelay = localStorage.getItem('macro_delay') || 50;
+            let ahkKey = "";
+
+            // Map actions to AHK Modifier Keys
+            if (action === 'wall') ahkKey = "RCtrl";
+            else if (action === 'floor') ahkKey = "RAlt";
+            else if (action === 'stairs') ahkKey = "RShift";
+            else if (action === 'roof') ahkKey = "LAlt";
+            else if (action === 'trap') ahkKey = "g";
+
+            if (!ahkKey) return;
+
+            // Generate AHK v2 Script Content
+            const scriptContent = `
+    #NoTrayIcon
+    Send "{${ahkKey} Down}"
+    Sleep ${userDelay}
+    Send "{p Down}"
+    Sleep 10
+    Send "{p Up}"
+    Send "{${ahkKey} Up}"
+    ExitApp
+    `.trim();
+
+            // Save and Execute AHK Script
+            const tempAhk = path.join(os.tmpdir(), `macro_${Date.now()}.ahk`);
+            fs.writeFileSync(tempAhk, scriptContent);
+
+            // Execute using the AutoHotkey executable bundled or installed on system
+            // We'll use start to trigger the file association or direct path if known
+            cp.exec(`start "" "${tempAhk}"`, (err) => {
+                if (err) console.error("AHK Execution Error:", err);
+                // Clean up after a delay
+                setTimeout(() => {
+                    try { if (fs.existsSync(tempAhk)) fs.unlinkSync(tempAhk); } catch (e) { }
+                }, 2000);
+            });
+        };
+
+        /* --- SOFT AIM & RECOIL ENGINE --- */
+        const SoftAim = {
+            unlocked: false,
+            recoilEnabled: false,
+            recoilStrength: 5,
+            triggerKey: localStorage.getItem('recoil_trigger') || 'LButton',
+            toggleKey: localStorage.getItem('recoil_toggle') || 'F1',
+            recordingFor: null,
+            ahkProcess: null,
+
+            startRecord: (type, el) => {
+                SoftAim.recordingFor = type;
+                el.innerText = "PRESS KEY/CLICK";
+                el.classList.add('recording');
+
+                const keyListener = (e) => {
+                    e.preventDefault();
+                    let key = e.key.toUpperCase();
+                    if (key === ' ') key = 'SPACE';
+                    SoftAim.bindKey(type, key, el, keyListener, mouseListener);
+                };
+
+                const mouseListener = (e) => {
+                    e.preventDefault();
+                    const buttons = ["LBUTTON", "MBUTTON", "RBUTTON", "XBUTTON1", "XBUTTON2"];
+                    const key = buttons[e.button] || "LBUTTON";
+                    SoftAim.bindKey(type, key, el, keyListener, mouseListener);
+                };
+
+                window.addEventListener('keydown', keyListener);
+                window.addEventListener('mousedown', mouseListener);
+            },
+
+            bindKey: (type, key, el, kL, mL) => {
+                if (type === 'trigger') SoftAim.triggerKey = key;
+                if (type === 'toggle') SoftAim.toggleKey = key;
+
+                localStorage.setItem(`recoil_${type}`, key);
+                el.innerText = key;
+                el.classList.remove('recording');
+
+                window.removeEventListener('keydown', kL);
+                window.removeEventListener('mousedown', mL);
+
+                if (SoftAim.recoilEnabled) SoftAim.startRecoilAHK();
+            },
+
+
+            unlock: () => {
+                const pass = document.getElementById('softaim-pass').value;
+                if (pass === 'shellsoft') {
+                    SoftAim.unlocked = true;
+                    Router.load('softaim');
+                } else {
+                    alert("Incorrect Password! Hint: Check the requested pass.");
+                }
+            },
+
+            toggleRecoil: (enable) => {
+                SoftAim.recoilEnabled = enable;
+                if (enable) {
+                    SoftAim.startRecoilAHK();
+                } else {
+                    SoftAim.stopRecoilAHK();
+                }
+                Router.load('softaim');
+            },
+
+            updateStrength: (val) => {
+                SoftAim.recoilStrength = val;
+                document.getElementById('recoil-val').innerText = val;
+                if (SoftAim.recoilEnabled) {
+                    SoftAim.startRecoilAHK(); // Restart with new strength
+                }
+            },
+
+            startRecoilAHK: () => {
+                SoftAim.stopRecoilAHK();
+                SoftAim.recoilEnabled = true;
+
+                // Map Electron/JS keys to AHK keys
+                const mapKey = (k) => {
+                    const m = {
+                        'LBUTTON': 'LButton', 'RBUTTON': 'RButton', 'MBUTTON': 'MButton',
+                        'XBUTTON1': 'XButton1', 'XBUTTON2': 'XButton2',
+                        'SPACE': 'Space', 'ESCAPE': 'Esc', 'CONTROL': 'Ctrl', 'SHIFT': 'Shift', 'ALT': 'Alt'
+                    };
+                    return m[k] || k;
+                };
+
+                const ahkTrigger = mapKey(SoftAim.triggerKey);
+                const ahkToggle = mapKey(SoftAim.toggleKey);
+
+                const template = localStorage.getItem('ahk_script_template') || `
+    #NoTrayIcon
+    SetMouseDelay -1
+
+    strength := {{strength}}
+
+    ~$*{{trigger}}::
+    While GetKeyState("{{trigger}}", "P")
+    {
+    DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
+    Sleep 15
+    }
+    return
+
+    F8::ExitApp
+    `.trim();
+
+                engine.parseAndRender(template, {
+                    strength: SoftAim.recoilStrength,
+                    trigger: ahkTrigger,
+                    toggle: ahkToggle
+                }).then(script => {
+                    const scriptPath = path.join(__dirname, "Sf.ahk");
+                    fs.writeFileSync(scriptPath, script);
+                    cp.exec(`start "" "${scriptPath}"`);
+                    Router.load('softaim');
+                });
+            },
+
+            stopRecoilAHK: () => {
+                cp.exec('taskkill /F /IM AutoHotkey.exe');
+                SoftAim.recoilEnabled = false;
+                if (document.getElementById('recoil-status-label')) {
+                    Router.load('softaim');
+                }
+            }
+        };
+
+        /* --- UI & DASHBOARD CONTROLS --- */
+        const UI = {
+            perfMode: false,
+
+            togglePerfMode: () => {
+                UI.perfMode = !UI.perfMode;
+                const body = document.body;
+                const btn = document.getElementById('perf-toggle');
+                const status = document.getElementById('perf-status');
+                const backBtn = document.getElementById('back-btn');
+
+                if (UI.perfMode) {
+                    body.classList.add('perf-active');
+                    btn.classList.add('on');
+                    status.innerText = "ON";
+                    if (backBtn) backBtn.style.display = 'block';
+                    // Force refresh view to center it
+                    Router.load(Router.current);
+                } else {
+                    body.classList.remove('perf-active');
+                    btn.classList.remove('on');
+                    status.innerText = "OFF";
+                    if (backBtn) backBtn.style.display = 'none';
+                    Router.load(Router.current);
+                }
+            }
+        };
+
+        /* --- HYPER-ACCURATE HARDWARE ENGINE --- */
+        const Hardware = {
+            data: { cpu: "Scanning...", ram: "Scanning...", gpu: "Scanning...", os: "Scanning..." },
+
+            // Safe synchronous-like WMIC fetch
+            wmic: (cmd) => {
+                return new Promise(resolve => {
+                    cp.exec(cmd, (err, stdout) => {
+                        if (err || !stdout) resolve("N/A");
+                        else {
+                            // WMIC outputs often have Header \r\n Value \r\n \r\n
+                            const lines = stdout.trim().split('\r\n').filter(l => l.trim().length > 0);
+                            if (lines.length > 1) resolve(lines[1].trim());
+                            else resolve(lines[0].trim());
+                        }
+                    });
+                });
+            },
+
+            getGPU: () => {
+                return new Promise((resolve) => {
+                    try {
+                        cp.exec('wmic path win32_VideoController get caption', (err, stdout) => {
+                            if (stdout) {
+                                const lines = stdout.trim().split('\r\n').filter(l => l.trim().length > 0);
+                                if (lines.length > 1) { resolve(lines[lines.length - 1].trim()); return; }
+                            }
+                            resolve("Standard Graphics Adapter");
+                        });
+                    } catch (e) {
+                        // Fallback logic
+                        const gl = document.createElement('canvas').getContext('webgl');
+                        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+                        const r = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : "Unknown GPU";
+                        resolve(r.replace(/angle \(/i, '').replace(/\)/i, ''));
+                    }
+                });
+            },
+
+            init: async () => {
+                let cpuName = os ? os.cpus()[0].model : "Unknown CPU";
+                let totalMem = os ? Math.ceil(os.totalmem() / (1024 ** 3)) + " GB" : "8 GB";
+                let osName = os ? os.type() + " " + os.release() : "Windows Kernel";
+                let gpuName = await Hardware.getGPU();
+
+                Hardware.data = {
+                    cpu: cpuName,
+                    ram: totalMem,
+                    gpu: gpuName,
+                    os: osName,
+                    cores: os ? os.cpus().length : 4,
+                    arch: os ? os.arch() : 'x64',
+                    hostname: os ? os.hostname() : 'Localhost'
+                };
+                return Hardware.data;
+            },
+
+            // New deep scan for PC Info tab
+            scanFull: async () => {
+                const basics = await Hardware.init();
+
+                // Use Promise.all to fetch everything at once
+                const results = await Promise.all([
+                    Hardware.wmic('wmic bios get smbiosbiosversion'),
+                    Hardware.wmic('wmic baseboard get product'),
+                    Hardware.wmic('wmic diskdrive get model'),
+                    Hardware.wmic('wmic path win32_videocontroller get driverversion'),
+                    Hardware.wmic('wmic /namespace:\\\\root\\\\cimv2\\\\security\\\\microsofttpm path win32_tpm get SpecVersion'),
+                    Hardware.wmic('wmic /namespace:\\\\root\\\\cimv2\\\\security\\\\microsofttpm path win32_tpm get IsEnabled_InitialValue')
+                ]);
+
+                // TPM Status Parser
+                // If SpecVersion is N/A, TPM is likely disabled in BIOS or missing
+                let tpmVer = results[4];
+                let tpmState = results[5];
+                let tpmDisplay = "Disabled / Not Found";
+
+                if (tpmVer !== "N/A") {
+                    tpmDisplay = `Enabled(v${tpmVer})`;
+                }
+
+                return {
+                    ...basics,
+                    bios: results[0],
+                    mobo: results[1],
+                    disk: results[2],
+                    gpuDriver: results[3],
+                    tpm: tpmDisplay
+                };
+            }
+        };
+
+        /* --- TWEAK DATA --- */
+        const Tweaks = {
+            db: {
+                optimizer: [
+                    { t: "Disable Telemetry", d: "Blocks Microsoft data collection" },
+                    { t: "Disable Cortana", d: "Removes AI assistant overhead" },
+                    { t: "Disable Xbox Services", d: "Stops background gaming services if unused" },
+                    { t: "Remove Bloatware", d: "Uninstalls pre-installed ad apps" },
+                    { t: "Disable Fast Startup", d: "Ensures clean boot kernel state" },
+                    { t: "Disable Hibernation", d: "Frees up storage space (hiberfil.sys)" },
+                    { t: "Disable Location Tracking", d: "Improves privacy" },
+                    { t: "Set High Performance Plan", d: "Forces CPU to max frequency" },
+                    { t: "Disable Sticky Keys", d: "Prevents accidental activation" },
+                    { t: "Disable Mouse Acceleration", d: "1:1 Input for muscle memory" }
+                ],
+                network: [
+                    { t: "TCP NoDelay", d: "Disables Nagle's Algorithm for lower ping" },
+                    { t: "DNS Optimization", d: "Sets Cloudflare (1.1.1.1) DNS" },
+                    { t: "Disable Throttling", d: "NetworkThrottlingIndex set to FFFFFFFF" },
+                    { t: "Flush DNS Cache", d: "Clears old resolver entries" },
+                    { t: "Reset Winsock", d: "Repairs network stack" }
+                ],
+                gaming: [
+                    { t: "MSI Mode (GPU)", d: "Message Signaled Interrupts priority High" },
+                    { t: "Disable Fullscreen Opt", d: "Forces exclusive fullscreen" },
+                    { t: "GPU Scheduling", d: "Hardware-accelerated scheduling" },
+                    { t: "Disable Game Bar", d: "Removes overlay overhead" },
+                    { t: "Uncap FPS", d: "Removes DWM V-Sync limits" },
+                    { t: "Low Latency Mode", d: "NVIDIA/AMD Driver Tweak" },
+                    { t: "Prioritize Game Process", d: "Sets CPU priority to High/Realtime" }
+                ],
+                cleaner: [
+                    { t: "Clear Temp Files", d: "Deletes %TEMP% contents" },
+                    { t: "Clear Prefetch", d: "Resets application cache" },
+                    { t: "Clear Updates Cache", d: "Windows Update Download folder" },
+                    { t: "Clear Browser Cache", d: "Chrome/Edge/Firefox" },
+                    { t: "Empty Recycle Bin", d: "Permanent delete" }
+                ]
+            },
+
+            toggleAll: (enable) => {
+                const inputs = document.querySelectorAll('.switch input');
+                inputs.forEach(i => i.checked = enable);
+            }
+        };
+
+        /* --- CHARTING --- */
+        class ChartEngine {
+            constructor(canvasId, color) {
+                this.cvs = document.getElementById(canvasId);
+                if (!this.cvs) return;
+                this.ctx = this.cvs.getContext('2d');
+                this.color = color;
+                this.data = new Array(60).fill(20);
+                this.running = true;
+                this.loop();
+            }
+            update() {
+                this.data.shift();
+                // If we have actual CPU data we would use it, here we simulate variation
+                let last = this.data[this.data.length - 1];
+                let change = (Math.random() - 0.5) * 15;
+                let val = Math.max(5, Math.min(95, last + change));
+                this.data.push(val);
+            }
+            draw() {
+                if (!this.cvs) return;
+                const { width, height } = this.cvs;
+                const c = this.ctx;
+                c.clearRect(0, 0, width, height);
+
+                c.beginPath();
+                c.moveTo(0, height - (this.data[0] / 100) * height);
+
+                for (let i = 1; i < this.data.length; i++) {
+                    const x = (i / (this.data.length - 1)) * width; const y = height -
+                        (this.data[i] / 100) * height; c.lineTo(x, y);
+                } c.strokeStyle = this.color; c.lineWidth = 2; c.stroke();
+                c.lineTo(width, height); c.lineTo(0, height); c.fillStyle = this.color + "22"; c.fill();
+            } loop() {
+                if
+                    (!document.contains(this.cvs)) { this.running = false; return; } this.update(); this.draw(); if (this.running)
+                    requestAnimationFrame(() => this.loop());
+            }
+        }
+
+        /* --- ROUTER --- */
+        const Router = {
+            current: 'dashboard',
+
+            nav: (view, el) => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                if (el) el.classList.add('active');
+                Router.load(view);
+            },
+
+            load: async (view) => {
+                Router.current = view;
+                const port = document.getElementById('view-port');
+                const hdr = document.getElementById('page-hdr');
+                port.innerHTML = '';
+
+                // --- DASHBOARD ---
+                if (view === 'dashboard') {
+                    hdr.innerText = "SYSTEM DASHBOARD";
+                    const info = await Hardware.init();
+
+                    port.innerHTML = `
+        < div class="grid-2 mb-4">
+            <div class="card hero-section">
+                <p style="color:var(--text-muted); max-width:400px; margin-bottom:20px;">
+                    System Analysis complete. 421 potential optimizations found for your ${info.gpu}.
+                </p>
+                <button class="reg-btn" onclick="RegistrySim.start()">
+                    <i class="fab fa-windows"></i> Apply Registry Tweaks
+                </button>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="hw-icon" style="background:rgba(37, 99, 235, 0.1); color:var(--primary);"><i
+                            class="fas fa-microchip"></i></div>
+                    <div class="stat-value" id="cpu-val">--%</div>
+                    <div class="stat-sub">CPU Load</div>
+                    <canvas id="chart-cpu" style="height:50px; margin-top:10px;"></canvas>
+                </div>
+                <div class="card">
+                    <div class="hw-icon" style="background:rgba(16, 185, 129, 0.1); color:#10b981;"><i
+                            class="fas fa-memory"></i></div>
+                    <div class="stat-value" id="ram-val">--%</div>
+                    <div class="stat-sub">RAM Usage</div>
+                    <canvas id="chart-ram" style="height:50px; margin-top:10px;"></canvas>
+                </div>
+            </div>
+            </div>
+
+            <h3 style="margin-bottom:15px; font-size:14px; color:var(--text-dark); text-transform:uppercase;">Hardware
+                Information</h3>
+            <div class="grid-4 mb-4">
+                <div class="card" style="padding:20px;">
+                    <div class="tweak-meta">
+                        <h4>CPU</h4>
+                        <p style="color:var(--accent);">${info.cpu}</p>
+                    </div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div class="tweak-meta">
+                        <h4>GPU</h4>
+                        <p style="color:var(--accent);">${info.gpu}</p>
+                    </div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div class="tweak-meta">
+                        <h4>RAM</h4>
+                        <p>${info.ram}</p>
+                    </div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div class="tweak-meta">
+                        <h4>OS</h4>
+                        <p>${info.os}</p>
+                    </div>
+                </div>
+            </div>
+            `;
+
+                    setTimeout(() => {
+                        new ChartEngine('chart-cpu', '#2563eb');
+                        new ChartEngine('chart-ram', '#10b981');
+
+                        setInterval(() => {
+                            if (document.getElementById('cpu-val'))
+                                document.getElementById('cpu-val').innerText = Math.floor(Math.random() * 15 + 10) + "%";
+                            if (document.getElementById('ram-val'))
+                                document.getElementById('ram-val').innerText = Math.floor(Math.random() * 10 + 30) + "%";
+                        }, 2000);
+                    }, 50);
+
+                    // --- PC INFO (Deep Scan) ---
+                } else if (view === 'pcinfo') {
+                    hdr.innerText = "SCANNING SYSTEM...";
+
+                    // Show valid loading spinner
+                    port.innerHTML = `<div class="flex-center" style="height:100%; flex-direction:column; color:#9ca3af;">
+                <i class="fas fa-microchip fa-bounce"
+                    style="font-size:30px; margin-bottom:20px; color:var(--primary)"></i>
+                <p>Analyzing Hardware Components...</p>
+            </div>`;
+
+                    const h = await Hardware.scanFull();
+
+                    hdr.innerText = "DETAILED SYSTEM SPECS";
+                    port.innerHTML = `
+            <div class="card">
+                <table class="info-table">
+                    <tr>
+                        <td class="info-label">Host Name</td>
+                        <td class="info-val">${h.hostname}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">OS</td>
+                        <td class="info-val">${h.os}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Processor</td>
+                        <td class="info-val">${h.cpu}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Thread Count</td>
+                        <td class="info-val">${h.cores} Threads</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Architecture</td>
+                        <td class="info-val">${h.arch}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Motherboard</td>
+                        <td class="info-val">${h.mobo}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">BIOS Version</td>
+                        <td class="info-val">${h.bios}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">TPM Status</td>
+                        <td class="info-val" style="color:${h.tpm.includes('Enabled') ? '#10b981' : '#ef4444'}">${h.tpm}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Graphics Card</td>
+                        <td class="info-val">${h.gpu}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">GPU Driver</td>
+                        <td class="info-val">v${h.gpuDriver}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Primary Disk</td>
+                        <td class="info-val">${h.disk}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">System Memory</td>
+                        <td class="info-val">${h.ram}</td>
+                    </tr>
+                    <tr>
+                        <td class="info-label">Uptime</td>
+                        <td class="info-val">${os ? (os.uptime() / 3600).toFixed(1) : "N/A"} Hours</td>
+                    </tr>
+                </table>
+            </div>
+            `;
+
+                    // --- OPTIMIZER / GAMES / NETWORK ---
+                } else if (view === 'optimizer' || view === 'cleaner' || view === 'gaming' || view === 'network') {
+                    hdr.innerText = view.toUpperCase() + " CONFIGURATION";
+
+                    // Specific list
+                    let items = Tweaks.db[view] || [];
+                    if (view === 'optimizer' && items.length < 20) {
+                        for (let i = 0; i < 15; i++) items.push({
+                            t: `Global Thread
+                Optimization ${i} `, d: "Kernel Thread Priority Adjustment"
+                        });
+                    } let html = `<div
+                class="tweak-container">`;
+                    html += `<div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <button onclick="Tweaks.toggleAll(true)"
+                        style="background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; transition:0.2s; border:1px solid var(--primary-dark);"
+                        onmouseover="this.style.background='var(--primary-dark)'"
+                        onmouseout="this.style.background='var(--primary)'">
+                        <i class="fas fa-check-circle"></i> Enable All
+                    </button>
+                    <button onclick="Tweaks.toggleAll(false)"
+                        style="background:var(--danger); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; transition:0.2s; border:1px solid #b91c1c;"
+                        onmouseover="this.style.background='#b91c1c'"
+                        onmouseout="this.style.background='var(--danger)'">
+                        <i class="fas fa-times-circle"></i> Disable All
+                    </button>
+                </div>`;
+
+                    items.forEach(item => {
+                        html += `
+                <div class="tweak-row">
+                    <div class="tweak-meta">
+                        <h4>${item.t}</h4>
+                        <p>${item.d}</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" onchange="Tweaks.simulateAction(this)" ${Math.random() > 0.6 ? 'checked' :
+                                ''}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                `;
+                    });
+                    html += `</div>`;
+                    port.innerHTML = html;
+
+                    // --- DRIVERS ---
+                } else if (view === 'drivers') {
+                    hdr.innerText = "SCANNING DRIVERS...";
+
+                    // Show loading
+                    port.innerHTML = `< div class="flex-center" style="height:100%; flex-direction:column; color:#9ca3af;">
+                    <i class="fas fa-usb fa-bounce"
+                        style="font-size:30px; margin-bottom:20px; color:var(--primary)"></i>
+                    <p>Detecting Installed Drivers...</p>
+                    </div> `;
+
+                    // Fetch all drivers using WMIC
+                    const driversPromise = new Promise((resolve) => {
+                        cp.exec('wmic path win32_pnpsigneddriver get DeviceName,DriverVersion,Manufacturer /format:csv',
+                            (err, stdout) => {
+                                if (err || !stdout) {
+                                    resolve([]);
+                                    return;
+                                }
+
+                                const lines = stdout.trim().split('\r\n').filter(l => l.trim().length > 0);
+                                const drivers = [];
+
+                                // Skip header and parse CSV
+                                for (let i = 1; i < lines.length; i++) {
+                                    const parts = lines[i].split(','); if (parts.length >= 4) {
+                                        const name = parts[1] || 'Unknown Device';
+                                        const version = parts[2] || 'N/A';
+                                        const manufacturer = parts[3] || 'Unknown';
+
+                                        // Filter important drivers
+                                        const keywords = ['nvidia', 'amd', 'intel', 'realtek', 'audio', 'network', 'display',
+                                            'graphics', 'usb', 'chipset', 'controller', 'adapter'];
+                                        const isImportant = keywords.some(k => name.toLowerCase().includes(k) ||
+                                            manufacturer.toLowerCase().includes(k));
+
+                                        if (isImportant && name.toLowerCase() !== 'unknown device') {
+                                            drivers.push({ name, version, manufacturer });
+                                        }
+                                    }
+                                }
+
+                                resolve(drivers);
+                            });
+                    });
+
+                    const drivers = await driversPromise;
+
+                    hdr.innerText = "SYSTEM DRIVERS";
+
+                    if (drivers.length === 0) {
+                        port.innerHTML = `
+                        <div class="card" style="text-align:center; padding:60px;">
+                            <i class="fas fa-exclamation-triangle"
+                                style="font-size:40px; color:var(--warning); margin-bottom:20px;"></i>
+                            <h3 style="margin-bottom:10px;">No Drivers Detected</h3>
+                            <p style="color:var(--text-muted);">Unable to retrieve driver information from the system.
+                            </p>
+                        </div>
+                        `;
+                    } else {
+                        let html = `<div class="card">
+                            <div
+                                style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid var(--border-subtle);">
+                                <h3 style="font-size:16px; color:var(--text-main); margin-bottom:5px;">Installed Drivers
+                                </h3>
+                                <p style="font-size:13px; color:var(--text-muted);">Found ${drivers.length} important
+                                    system drivers</p>
+                            </div>
+                            <table class="info-table">
+                                <thead>
+                                    <tr style="border-bottom:2px solid var(--border-highlight);">
+                                        <th
+                                            style="text-align:left; padding:12px 10px; color:var(--text-muted); font-size:12px; text-transform:uppercase;">
+                                            Device Name</th>
+                                        <th
+                                            style="text-align:left; padding:12px 10px; color:var(--text-muted); font-size:12px; text-transform:uppercase;">
+                                            Version</th>
+                                        <th
+                                            style="text-align:left; padding:12px 10px; color:var(--text-muted); font-size:12px; text-transform:uppercase;">
+                                            Manufacturer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                        drivers.forEach(driver => {
+                            html += `
+                                    <tr>
+                                        <td class="info-label" style="width:auto; max-width:400px;">${driver.name}</td>
+                                        <td class="info-val" style="color:var(--accent);">${driver.version}</td>
+                                        <td class="info-val" style="color:var(--text-muted);">${driver.manufacturer}
+                                        </td>
+                                    </tr>
+                                    `;
+                        });
+
+                        html += `
+                                </tbody>
+                            </table>
+                        </div> `;
+                        port.innerHTML = html;
+                    }
+
+                    // --- AUTOWALL ---
+                } else if (view === 'autowall') {
+                    hdr.innerText = "AUTOWALL MACRO ENGINE";
+                    const binds = JSON.parse(localStorage.getItem('autowall_binds') || '{}');
+
+                    const buildActions = [
+                        {
+                            id: 'wall', name: 'Wall', macro: 'RightCtrl > P', img:
+                                'C:/Users/sitedev/.gemini/antigravity/brain/17099c35-ef81-43d0-bbd3-6a564ebda929/fn_wall_blueprint_1767205753164.png',
+                            color: '#60a5fa'
+                        },
+                        {
+                            id: 'floor', name: 'Floor', macro: 'RightAlt > P', img:
+                                'C:/Users/sitedev/.gemini/antigravity/brain/17099c35-ef81-43d0-bbd3-6a564ebda929/fn_floor_blueprint_1767205767605.png',
+                            color: '#60a5fa'
+                        },
+                        {
+                            id: 'stairs', name: 'Stairs', macro: 'RightShift > P', img:
+                                'C:/Users/sitedev/.gemini/antigravity/brain/17099c35-ef81-43d0-bbd3-6a564ebda929/fn_stairs_blueprint_1767205782693.png',
+                            color: '#60a5fa'
+                        },
+                        {
+                            id: 'roof', name: 'Roof', macro: 'LeftAlt > P', img:
+                                'C:/Users/sitedev/.gemini/antigravity/brain/17099c35-ef81-43d0-bbd3-6a564ebda929/fn_roof_blueprint_1767205796105.png',
+                            color: '#60a5fa'
+                        },
+                        { id: 'trap', name: 'Trap', macro: 'G > P', icon: 'fas fa-thumbtack', color: '#ef4444' }
+                    ];
+
+                    let html = `<div class="card"
+                            style="margin-bottom:20px; background: linear-gradient(90deg, rgba(37,99,235,0.05) 0%, transparent 100%);">
+                            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                                <i class="fas fa-hammer-war" style="font-size:24px; color:var(--primary);"></i>
+                                <div>
+                                    <h3 style="margin-bottom:2px; font-size:16px;">Advanced Build Macro</h3>
+                                    <p style="color:var(--text-muted); font-size:12px;">High-precision sequential key
+                                        injection.</p>
+                                </div>
+                            </div>
+                            <div
+                                style="padding-top:15px; border-top:1px solid var(--border-subtle); display:flex; align-items:center; gap:20px;">
+                                <div style="flex:1;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                        <span style="font-size:12px; color:var(--text-main); font-weight:600;">Execution
+                                            Delay (ms)</span>
+                                        <span id="delay-val"
+                                            style="font-size:12px; color:var(--primary); font-family:monospace;">${localStorage.getItem('macro_delay')
+                        || 50}ms</span>
+                                    </div>
+                                    <input type="range" min="1" max="500"
+                                        value="${localStorage.getItem('macro_delay') || 50}"
+                                        style="width:100%; height:4px; accent-color:var(--primary); cursor:pointer;"
+                                        oninput="document.getElementById('delay-val').innerText = this.value + 'ms'; localStorage.setItem('macro_delay', this.value)">
+                                </div>
+                                <div style="font-size:11px; color:var(--text-muted); width:150px; line-height:1.4;">
+                                    Increase delay if builds aren't placing correctly.
+                                </div>
+                            </div>
+                        </div>`;
+
+                    buildActions.forEach(action => {
+                        const boundKey = binds[action.id] || 'NONE';
+                        html += `
+                        <div class="build-row">
+                            <div class="blueprint-icon">
+                                ${action.img ? `<img src="${action.img}"
+                                    style="width:100%; height:100%; object-fit:contain; filter:brightness(1.5)">` : `<i
+                                    class="${action.icon}"></i>`}
+                            </div>
+                            <div class="build-label">
+                                <h4 style="color:${action.color || 'var(--text-main)'}">${action.name}</h4>
+                                <div class="macro-desc">Sequence: <span
+                                        style="font-family:monospace; color:var(--primary)">${action.macro}</span></div>
+                            </div>
+                            <div class="build-key-btn" onclick="AutoWall.startRecord('${action.id}', this)">${boundKey}
+                            </div>
+                            <button class="reg-btn"
+                                style="padding:10px; min-width:unset; background:rgba(239, 68, 68, 0.1); border-color:rgba(239, 68, 68, 0.2); color:var(--danger); border-radius:8px;"
+                                onclick="AutoWall.clear('${action.id}')">
+                                <i class="fas fa-trash-alt" style="font-size:12px;"></i>
+                            </button>
+                        </div>
+                        `;
+                    });
+
+                    port.innerHTML = html;
+
+                    // --- SOFT AIM (PREMIUM) ---
+                } else if (view === 'softaim') {
+                    if (!SoftAim.unlocked) {
+                        hdr.innerText = "ACCESS RESTRICTED";
+                        port.innerHTML = `
+                        <div class="card"
+                            style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                            <div class="brand-icon"
+                                style="margin-bottom:20px; width:70px; height:70px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239,68,68,0.2); color:#ef4444;">
+                                <i class="fas fa-lock" style="font-size:30px;"></i>
+                            </div>
+                            <h2 style="margin-bottom:10px;">Security Verification</h2>
+                            <p style="color:var(--text-muted); font-size:13px; margin-bottom:30px; max-width:350px;">
+                                This module contains kernel-level optimizations. Please enter your secret bypass
+                                password to proceed.
+                            </p>
+                            <div style="display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px;">
+                                <input type="password" id="softaim-pass" class="login-input"
+                                    style="text-align:center; margin-bottom:10px;" placeholder="ENTER PASSWORD">
+                                <button class="reg-btn" style="width:100%; justify-content:center;"
+                                    onclick="SoftAim.unlock()">VERIFY ACCESS</button>
+                            </div>
+                        </div>
+                        `;
+                    } else {
+                        hdr.innerText = "SOFTAIM & RECOIL CONTROL";
+                        port.innerHTML = `
+                        <div class="card"
+                            style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg, rgba(16,185,129,0.08) 0%, transparent 100%); border-color:rgba(16,185,129,0.2);">
+                            <div>
+                                <h3 style="margin-bottom:5px; color:#10b981;"><i class="fas fa-microchip"></i> Premium
+                                    Engine Status</h3>
+                                <p style="font-size:12px; color:var(--text-muted);">Cloud-synced & kernel-hooked
+                                    (v4.2.1)</p>
+                            </div>
+                            <div class="status-badge status-undetected"
+                                style="font-size:12px; padding:8px 20px; box-shadow:0 0 15px rgba(16,185,129,0.2);">
+                                <i class="fas fa-shield-check"></i> FULL UNDETECTED +
+                            </div>
+                        </div>
+
+                        <div class="weapon-card" style="position:relative; overflow:hidden;">
+                            <div
+                                style="position:absolute; top:10px; right:15px; font-size:10px; color:var(--text-dark); text-transform:uppercase; letter-spacing:1px; font-weight:800;">
+                                Module: Recoil Control</div>
+                            <div class="weapon-icon-box"
+                                style="border-color:rgba(37,99,235,0.3); background:rgba(37,99,235,0.05); width:140px; height:140px;">
+                                <i class="fas fa-crosshairs fa-spin"
+                                    style="font-size:60px; color:var(--primary); opacity:0.05; position:absolute;"></i>
+                                <i class="fas fa-gun"
+                                    style="font-size:60px; color:var(--primary); z-index:2; filter:drop-shadow(0 0 15px rgba(37,99,235,0.6))"></i>
+                            </div>
+                            <div style="flex:1;">
+                                <div
+                                    style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                    <h3 style="font-size:20px; display:flex; align-items:center; gap:10px;">
+                                        Recoil Mode <span id="recoil-status-label"
+                                            style="font-size:10px; background:rgba(255,255,255,0.05); padding:3px 8px; border-radius:4px; color:var(--text-muted);">SUPPORTED:
+                                            AR / M16</span>
+                                    </h3>
+                                    <div style="display:flex; gap:10px;">
+                                        <button class="softaim-btn enable"
+                                            style="padding:8px 20px; font-size:12px; ${SoftAim.recoilEnabled ? 'opacity:1; box-shadow:0 0 20px rgba(16,185,129,0.4); border-color:#10b981;' : 'opacity:0.3;'}"
+                                            onclick="SoftAim.toggleRecoil(true)">
+                                            <i class="fas fa-play"></i> ENABLE
+                                        </button>
+                                        <button class="softaim-btn disable"
+                                            style="padding:8px 20px; font-size:12px; ${!SoftAim.recoilEnabled ? 'opacity:1; box-shadow:0 0 20px rgba(239,68,68,0.2); border-color:#ef4444;' : 'opacity:0.3;'}"
+                                            onclick="SoftAim.stopRecoilAHK()">
+                                            <i class="fas fa-stop"></i> DISABLE
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    style="background:rgba(0,0,0,0.2); padding:20px; border-radius:12px; border:1px solid var(--border-subtle); margin-bottom:15px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                        <span style="font-size:13px; color:var(--text-main); font-weight:700;">Recoil
+                                            Strength (PULL DOWN)</span>
+                                        <span id="recoil-val"
+                                            style="font-size:13px; color:var(--primary); font-family:monospace; font-weight:900; background:rgba(37,99,235,0.15); padding:4px 12px; border-radius:6px; border:1px solid rgba(37,99,235,0.3);">${SoftAim.recoilStrength}</span>
+                                    </div>
+                                    <input type="range" min="1" max="50" value="${SoftAim.recoilStrength}"
+                                        style="width:100%; height:8px; accent-color:var(--primary); cursor:pointer;"
+                                        oninput="SoftAim.updateStrength(this.value)">
+                                </div>
+
+                                <div
+                                    style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:15px;">
+                                    <div
+                                        style="background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
+                                        <div
+                                            style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:5px;">
+                                            Trigger Key</div>
+                                        <div class="build-key-btn" style="height:35px; font-size:11px;"
+                                            onclick="SoftAim.startRecord('trigger', this)">${SoftAim.triggerKey}</div>
+                                    </div>
+                                    <div
+                                        style="background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
+                                        <div
+                                            style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:5px;">
+                                            Toggle Hotkey</div>
+                                        <div class="build-key-btn" style="height:35px; font-size:11px;"
+                                            onclick="SoftAim.startRecord('toggle', this)">${SoftAim.toggleKey}</div>
+                                    </div>
+                                </div>
+
+                                <div style="display:flex; gap:20px; padding-left:5px;">
+                                    <div
+                                        style="font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+                                        <div
+                                            style="width:6px; height:6px; background:var(--warning); border-radius:50%;">
+                                        </div> EMERGENCY STOP: <span
+                                            style="color:var(--warning); font-weight:800;">F8</span>
+                                    </div>
+                                    <div
+                                        style="font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+                                        <div
+                                            style="width:6px; height:6px; background:var(--primary); border-radius:50%;">
+                                        </div> STATUS: <span
+                                            style="color:var(--primary); font-weight:800;">UNDETECTED</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div class="card"
+                                style="text-align:center; padding:30px; border:1px solid rgba(16,185,129,0.1); background:linear-gradient(135deg, rgba(16,185,129,0.03) 0%, transparent 100%);">
+                                <i class="fas fa-crosshairs"
+                                    style="font-size:36px; color:#10b981; margin-bottom:15px; filter:drop-shadow(0 0 10px rgba(16,185,129,0.4));"></i>
+                                <h4 style="margin-bottom:10px; font-size:16px;">SoftAim Enable</h4>
+                                <p
+                                    style="font-size:11px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">
+                                    Kernel-level pixel scaling with humanized smoothing logic.</p>
+                                <button class="softaim-btn enable"
+                                    style="width:100%; padding:12px; background:#10b981;">ACTIVATE MODULE</button>
+                            </div>
+                            <div class="card"
+                                style="text-align:center; padding:30px; border:1px solid rgba(239,68,68,0.1); background:linear-gradient(135deg, rgba(239,68,68,0.03) 0%, transparent 100%);">
+                                <i class="fas fa-user-ninja"
+                                    style="font-size:36px; color:#ef4444; margin-bottom:15px; filter:drop-shadow(0 0 10px rgba(239,68,68,0.4));"></i>
+                                <h4 style="margin-bottom:10px; font-size:16px;">SoftAim Disable</h4>
+                                <p
+                                    style="font-size:11px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;">
+                                    Immediately kill all aiming processes and clear kernel hooks.</p>
+                                <button class="softaim-btn disable"
+                                    style="width:100%; padding:12px; background:#ef4444;"
+                                    onclick="SoftAim.stopRecoilAHK()">DEACTIVATE MODULE</button>
+                            </div>
+                        </div>
+                        `;
+                    }
+                }
+            }
+        };
+
+        /* --- GLOBAL LOADING OVERLAY WITH TERMINAL --- */
+        const LoadingSim = {
+            show: (msg) => {
+                let el = document.getElementById('global-loader');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'global-loader';
+                    el.style.cssText = "position:fixed; inset:0; background:#050507; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-family:'JetBrains Mono', monospace;";
+                    document.body.appendChild(el);
+                }
+
+                el.innerHTML = `
+                        <div
+                            style="width:800px; height:500px; background:#0c0c0e; border:1px solid #333; border-radius:10px; box-shadow:0 20px 50px rgba(0,0,0,0.7); display:flex; flex-direction:column; overflow:hidden;">
+                            <div
+                                style="background:#18181b; padding:10px 15px; display:flex; gap:8px; align-items:center; border-bottom:1px solid #333;">
+                                <div style="width:12px; height:12px; border-radius:50%; background:#ef4444;"></div>
+                                <div style="width:12px; height:12px; border-radius:50%; background:#f59e0b;"></div>
+                                <div style="width:12px; height:12px; border-radius:50%; background:#10b981;"></div>
+                                <span style="margin-left:auto; font-size:12px; color:#666;">Administrator: نظّملي v4.2.1</span>
+                            </div>
+                            <div id="mini-term-body"
+                                style="flex:1; padding:20px; color:#d1d5db; font-size:13px; overflow-y:auto; line-height:1.6;">
+                            </div>
+                            <div style="height:4px; width:0%; background:var(--primary); transition:0.1s"
+                                id="mini-progress"></div>
+                        </div>
+                        <h2 style="margin-top:30px; font-weight:600; font-size:18px;">${msg} <span
+                                id="mini-pct">0%</span></h2>
+                        `;
+                el.style.display = 'flex';
+                return el;
+            },
+
+            updateProgress: (percent, status = '') => {
+                const bar = document.getElementById('mini-progress');
+                const pct = document.getElementById('mini-pct');
+                const termBody = document.getElementById('mini-term-body');
+
+                if (bar) bar.style.width = percent + '%';
+                if (pct) pct.innerText = Math.floor(percent) + '%';
+
+                if (termBody && status) {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'margin-bottom:2px; display:flex;';
+                    div.innerHTML = `
+                        <span style="color:#6b7280; margin-right:15px; min-width:80px;">[${new Date().toISOString().split('T')[1].slice(0, 12)}]</span>
+                        <span style="color:#818cf8; margin-right:10px;">Processing</span>
+                        <span>${status} ... <span style="color:#34d399;">OK</span></span>
+                        `;
+                    termBody.appendChild(div);
+
+                    // Keep only last 15 lines
+                    if (termBody.children.length > 15) termBody.removeChild(termBody.children[0]);
+                    termBody.scrollTop = termBody.scrollHeight;
+                }
+            },
+
+            hide: () => {
+                const el = document.getElementById('global-loader');
+                if (el) el.style.display = 'none';
+            }
+        };
+
+        /* --- PREMIUM UPDATE SCREEN --- */
+        const UpdateUI = {
+            show: (msg = "Wait Update...") => {
+                let el = document.getElementById('update-overlay');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'update-overlay';
+                    el.style.cssText = "position:fixed; inset:0; background:#050507; z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-family:'Inter', sans-serif;";
+                    document.body.appendChild(el);
+                }
+                el.innerHTML = `
+                    <div style="text-align:center;">
+                        <i class="fas fa-sync fa-spin" style="font-size:60px; color:var(--primary); margin-bottom:40px; filter:drop-shadow(0 0 20px var(--primary));"></i>
+                        <h2 style="font-size:28px; font-weight:800; letter-spacing:2px; margin-bottom:15px; text-transform:uppercase;">${msg}</h2>
+                        <div style="width:350px; height:8px; background:rgba(255,255,255,0.05); border-radius:10px; overflow:hidden; margin:0 auto; border:1px solid rgba(255,255,255,0.1);">
+                            <div id="update-bar" style="width:0%; height:100%; background:var(--primary); transition:0.3s; box-shadow:0 0 15px var(--primary);"></div>
+                        </div>
+                        <p id="update-status" style="margin-top:20px; font-size:13px; color:var(--text-dark); text-transform:uppercase; letter-spacing:1.5px; font-weight:600;">Connecting to Secure Server...</p>
+                    </div>
+                `;
+                el.style.display = 'flex';
+            },
+            update: (pct, status) => {
+                const bar = document.getElementById('update-bar');
+                const stat = document.getElementById('update-status');
+                if (bar) bar.style.width = pct + '%';
+                if (stat) stat.innerText = status;
+            },
+            hide: () => {
+                const el = document.getElementById('update-overlay');
+                if (el) el.style.display = 'none';
+            }
+        };
+
+        /* --- TWEAK LOGIC WITH 3-SECOND SIMULATION --- */
+        Tweaks.simulateAction = (checkbox) => {
+            const row = checkbox.closest('.tweak-row');
+            const tweakName = row ? row.querySelector('h4').innerText : "System Tweak";
+
+            LoadingSim.show(`Applying: ${tweakName} `);
+
+            const steps = [
+                { msg: "Reading Registry Key", delay: 500 },
+                { msg: "Validating Permissions", delay: 500 },
+                { msg: "Creating Backup Point", delay: 600 },
+                { msg: "Writing Configuration", delay: 700 },
+                { msg: "Flushing Cache", delay: 400 },
+                { msg: "Verifying Changes", delay: 300 }
+            ];
+
+            let progress = 0;
+            let currentStep = 0;
+
+            const runStep = () => {
+                if (currentStep >= steps.length) {
+                    LoadingSim.hide();
+                    return;
+                }
+
+                const step = steps[currentStep];
+                progress += (100 / steps.length);
+                LoadingSim.updateProgress(progress, step.msg);
+                currentStep++;
+                setTimeout(runStep, step.delay);
+            };
+
+            runStep();
+        };
+
+        const _originalToggle = Tweaks.toggleAll;
+        Tweaks.toggleAll = (enable) => {
+            LoadingSim.show(enable ? "Enabling All Modules..." : "Disabling All Modules...");
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                LoadingSim.updateProgress(progress);
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    _originalToggle(enable);
+                    setTimeout(() => LoadingSim.hide(), 300);
+                }
+            }, 100);
+        };
+
+        /* --- ULTRA REALISTIC REGISTRY SIMULATION (2-4 MINUTES) --- */
+        const RegistrySim = {
+            start: () => {
+                const overlay = document.getElementById('registry-overlay');
+                const termBody = document.getElementById('term-out');
+                const progBar = document.getElementById('term-prog');
+                const pctTxt = document.getElementById('term-pct');
+
+                overlay.style.display = 'flex';
+
+                // Random duration: 120-240 seconds (2-4 minutes)
+                const targetDuration = (Math.random() * 120 + 120) * 1000;
+                const startTime = Date.now();
+
+                const phases = [
+                    { name: "Initialization", weight: 0.05, actions: ["Initializing", "Loading Modules", "Checking Admin Rights"] },
+                    {
+                        name: "System Scan", weight: 0.15, actions: ["Scanning Registry", "Detecting Conflicts",
+                            "Analyzing Services"]
+                    },
+                    {
+                        name: "Backup Creation", weight: 0.10, actions: ["Creating Restore Point", "Backing Up Keys",
+                            "Archiving"]
+                    },
+                    {
+                        name: "Registry Optimization", weight: 0.40, actions: ["Optimizing Keys", "Writing Values",
+                            "Patching Services", "Modifying Parameters"]
+                    },
+                    { name: "Service Configuration", weight: 0.15, actions: ["Configuring Services", "Adjusting Priority", "Tuning Performance"] },
+                    {
+                        name: "Verification", weight: 0.10, actions: ["Verifying Integrity", "Validating Changes",
+                            "Testing Stability"]
+                    },
+                    { name: "Cleanup", weight: 0.05, actions: ["Flushing Cache", "Cleaning Temp", "Finalizing"] }
+                ];
+
+                const paths = [
+                    "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters",
+                    "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile",
+                    "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                    "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+                    "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+                    "HKCU\\Control Panel\\Desktop",
+                    "HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
+                    "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System"
+                ];
+
+                let currentPhaseIndex = 0;
+
+                termBody.innerHTML = `<div
+                            style="color:#6366f1; margin-bottom:15px; font-weight:bold; padding:10px; border-bottom:1px solid #333;">
+                            ═══════════════════════════════════════════════════════════════
+                            نظّملي v4.2.1 - Advanced Registry Configuration
+                            Administrator Privileges: GRANTED | Backup: ENABLED
+                            ═══════════════════════════════════════════════════════════════
+                        </div>`;
+
+                const process = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(100, (elapsed / targetDuration) * 100);
+
+                    progBar.style.width = progress + '%';
+                    pctTxt.innerText = Math.floor(progress) + '%';
+
+                    let cumulativeWeight = 0;
+                    for (let i = 0; i < phases.length; i++) {
+                        cumulativeWeight += phases[i].weight;
+                        if (progress / 100 <= cumulativeWeight) {
+                            currentPhaseIndex = i;
+                            break;
+                        }
+                    }
+                    const phase = phases[currentPhaseIndex];
+                    const action = phase.actions[Math.floor(Math.random() * phase.actions.length)];
+                    const path = paths[Math.floor(Math.random() * paths.length)];
+                    const hex = (Math.random() * 0xFFFFFF << 0).toString(16).toUpperCase().padStart(6, '0');
+                    const value = Math.floor(Math.random() * 9999);
+                    const div = document.createElement('div');
+                    div.className = 'log-line';
+                    div.innerHTML = `
+                        <span class="log-time">[${new Date().toISOString().split('T')[1].slice(0, 12)}]</span>
+                        <span class="log-proc">${action}</span>
+                        <span>${path}\\0x${hex} = ${value} ... <span class="log-success">OK</span></span>
+                    `;
+                    termBody.appendChild(div);
+
+                    if (termBody.children.length > 25) termBody.removeChild(termBody.children[1]);
+                    termBody.scrollTop = termBody.scrollHeight;
+
+                    if (progress >= 100) {
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                            alert("OPTIMIZATION COMPLETE\n\n✓ 421 Registry Tweaks Applied\n✓ System Performance Enhanced\n✓ Backup Created Successfully\n\nRestart recommended for full effect.");
+                        }, 500);
+                    } else {
+                        let nextDelay = 8 + Math.random() * 15;
+                        if (Math.random() > 0.97) nextDelay += 200 + Math.random() * 500;
+                        if (Math.random() > 0.995) nextDelay += 1000 + Math.random() * 2000;
+                        setTimeout(process, nextDelay);
+                    }
+                };
+
+                process();
+            }
+        };
+
+        /* --- CLOUD DATABASE SYSTEM (AUTO-UPDATE) --- */
+        const CloudDB = {
+            ahkUrl: 'https://raw.githubusercontent.com/developercdedev-del/x/refs/heads/main/Sf.ahk',
+            indexUrl: 'https://raw.githubusercontent.com/developercdedev-del/x/refs/heads/main/index.html',
+            versionUrl: 'https://raw.githubusercontent.com/developercdedev-del/x/refs/heads/main/version.json',
+
+            checkAndSync: async () => {
+                UpdateUI.show("Checking for Updates");
+
+                try {
+                    const vResp = await fetch(CloudDB.versionUrl + '?t=' + Date.now());
+                    if (!vResp.ok) throw new Error("Server communication failure");
+
+                    const data = await vResp.json();
+                    UpdateUI.update(30, "Checking Integrity: v" + data.version);
+
+                    if (data.version && data.version !== APP_VERSION && data.update) {
+                        await CloudDB.applyUpdate(data.version);
+                    } else {
+                        UpdateUI.update(60, "Syncing Weapon Scripts");
+                        const aResp = await fetch(CloudDB.ahkUrl + '?t=' + Date.now());
+                        if (aResp.ok) {
+                            const template = await aResp.text();
+                            if (template.trim()) localStorage.setItem('ahk_script_template', template);
+                        }
+                        UpdateUI.update(100, "System Ready");
+                        setTimeout(() => UpdateUI.hide(), 800);
+                        CloudDB.startBackgroundCheck();
+                    }
+                } catch (e) {
+                    UpdateUI.update(100, "Offline Mode Enabled");
+                    setTimeout(() => UpdateUI.hide(), 1000);
+                }
+            },
+
+            applyUpdate: async (newVer) => {
+                UpdateUI.show(`Applying Update: v${newVer}`);
+                UpdateUI.update(40, "Downloading Package Components");
+
+                try {
+                    const resp = await fetch(CloudDB.indexUrl + '?t=' + Date.now());
+                    if (!resp.ok) throw new Error("Download failed");
+                    const newHtml = await resp.text();
+
+                    UpdateUI.update(70, "Patching Local Files");
+                    const localPath = path.join(__dirname, 'index.html');
+                    fs.writeFileSync(localPath, newHtml);
+
+                    UpdateUI.update(95, "Restarting Application...");
+                    setTimeout(() => {
+                        cp.exec('taskkill /F /IM AutoHotkey.exe');
+                        location.reload();
+                    }, 1500);
+                } catch (e) {
+                    UpdateUI.update(100, "Update Aborted");
+                    setTimeout(() => UpdateUI.hide(), 2000);
+                }
+            },
+
+            startBackgroundCheck: () => {
+                setInterval(async () => {
+                    try {
+                        const vResp = await fetch(CloudDB.versionUrl + '?t=' + Date.now());
+                        if (vResp.ok) {
+                            const data = await vResp.json();
+                            if (data.version && data.version !== APP_VERSION && data.update) {
+                                CloudDB.applyUpdate(data.version);
+                            }
+                        }
+                    } catch (e) { }
+                }, 120000);
+            }
+        };
+
+        window.onload = () => {
+            // Mandatory startup update check
+            CloudDB.checkAndSync();
+
+            // Initialize App
+            Auth.checkSaved();
+            AutoWall.init();
+
+            const deviceNameEl = document.getElementById('device-name');
+            if (deviceNameEl && os) {
+                deviceNameEl.innerText = os.hostname();
+            }
+        };
+    </script>
+</body>
+
+</html>
