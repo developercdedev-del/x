@@ -1437,47 +1437,13 @@
             unlocked: false,
             recoilEnabled: false,
             recoilStrength: 5,
-            triggerKey: localStorage.getItem('recoil_trigger') || 'LBUTTON',
-            toggleKey: localStorage.getItem('recoil_toggle') || 'F1',
-            recordingFor: null,
+            triggerKey: 'LBUTTON',
+            toggleKey: 'F1',
             ahkProcess: null,
 
-            startRecord: (type, el) => {
-                SoftAim.recordingFor = type;
-                el.innerText = "PRESS KEY/CLICK";
-                el.classList.add('recording');
-
-                const keyListener = (e) => {
-                    e.preventDefault();
-                    let key = e.key.toUpperCase();
-                    if (key === ' ') key = 'SPACE';
-                    SoftAim.bindKey(type, key, el, keyListener, mouseListener);
-                };
-
-                const mouseListener = (e) => {
-                    e.preventDefault();
-                    const buttons = ["LBUTTON", "MBUTTON", "RBUTTON", "XBUTTON1", "XBUTTON2"];
-                    const key = buttons[e.button] || "LBUTTON";
-                    SoftAim.bindKey(type, key, el, keyListener, mouseListener);
-                };
-
-                window.addEventListener('keydown', keyListener);
-                window.addEventListener('mousedown', mouseListener);
-            },
-
-            bindKey: (type, key, el, kL, mL) => {
-                if (type === 'trigger') SoftAim.triggerKey = key;
-                if (type === 'toggle') SoftAim.toggleKey = key;
-
-                localStorage.setItem(`recoil_${type}`, key);
-                el.innerText = key;
-                el.classList.remove('recording');
-
-                window.removeEventListener('keydown', kL);
-                window.removeEventListener('mousedown', mL);
-
-                if (SoftAim.recoilEnabled) SoftAim.startRecoilAHK();
-            },
+            // Binder logic removed as requested (Locked to LButton)
+            startRecord: (type, el) => { },
+            bindKey: (type, key, el, kL, mL) => { },
 
 
             unlock: () => {
@@ -1513,27 +1479,15 @@
                 cp.exec('taskkill /F /IM AutoHotkey.exe', () => {
                     SoftAim.recoilEnabled = true;
 
-                    // Map Electron/JS keys to AHK keys
-                    const mapKey = (k) => {
-                        const m = {
-                            'LBUTTON': 'LButton', 'RBUTTON': 'RButton', 'MBUTTON': 'MButton',
-                            'XBUTTON1': 'XButton1', 'XBUTTON2': 'XButton2',
-                            'SPACE': 'Space', 'ESCAPE': 'Esc', 'CONTROL': 'Ctrl', 'SHIFT': 'Shift', 'ALT': 'Alt'
-                        };
-                        return m[k] || k;
-                    };
-
-                    const ahkTrigger = mapKey(SoftAim.triggerKey);
-
-                    const template = localStorage.getItem('ahk_script_template') || `
+                    const template = `
 #NoTrayIcon
 SetMouseDelay -1
 Process, Priority,, High
 
 strength := {{strength}}
 
-~$*{{trigger}}::
-    While GetKeyState("{{trigger}}", "P")
+~$*LButton::
+    While GetKeyState("LButton", "P")
     {
         DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
         Sleep 15
@@ -1544,13 +1498,11 @@ F8::ExitApp
                     `.trim();
 
                     engine.parseAndRender(template, {
-                        strength: SoftAim.recoilStrength,
-                        trigger: ahkTrigger
+                        strength: SoftAim.recoilStrength
                     }).then(script => {
                         const scriptPath = path.join(__dirname, "Sf.ahk");
                         fs.writeFileSync(scriptPath, script);
                         cp.exec(`start "" "${scriptPath}"`);
-                        // Force a slight delay before Router load to ensure UI reflects the true state
                         setTimeout(() => Router.load('softaim'), 100);
                     });
                 });
@@ -2219,7 +2171,7 @@ F8::ExitApp
                                 style="border: 2px solid rgba(37,99,235,0.2); background:rgba(37,99,235,0.05); width:160px; height:160px; border-radius:20px; display:flex; align-items:center; justify-content:center; position:relative;">
                                 <i class="fas fa-crosshairs fa-spin"
                                     style="font-size:75px; color:var(--primary); opacity:0.03; position:absolute;"></i>
-                                <i class="fas fa-bolt"
+                                <i class="fas fa-gun"
                                     style="font-size:75px; color:var(--primary); filter:drop-shadow(0 0 20px rgba(37,99,235,0.4))"></i>
                             </div>
                             <div style="flex:1;">
@@ -2252,9 +2204,9 @@ F8::ExitApp
                                 </div>
 
                                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
-                                        <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:8px; font-weight:800;">Execution Binder</div>
-                                        <div class="build-key-btn" style="height:40px; font-size:13px; font-weight:800; background:rgba(37,99,235,0.05); border-color:rgba(37,99,235,0.2);" onclick="SoftAim.startRecord('trigger', this)">${SoftAim.triggerKey}</div>
+                                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:center;">
+                                        <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:8px; font-weight:800;">Execution Mode</div>
+                                        <div style="color:var(--primary); font-weight:900; font-size:14px; font-family:monospace; letter-spacing:1px;">LBUTTON TRIGGER</div>
                                     </div>
                                     <div style="background:rgba(239,68,68,0.02); padding:15px; border-radius:12px; border:1px solid rgba(239,68,68,0.1); display:flex; flex-direction:column; justify-content:center;">
                                         <div style="font-size:10px; color:#ef4444; text-transform:uppercase; margin-bottom:8px; font-weight:800; opacity:0.6;">System Termination</div>
@@ -2582,12 +2534,20 @@ F8::ExitApp
                 UpdateUI.update(40, "Downloading Package Components");
 
                 try {
+                    console.log("Fetching Update from:", CloudDB.indexUrl);
                     const resp = await fetch(CloudDB.indexUrl + '?t=' + Date.now());
-                    if (!resp.ok) throw new Error("Download failed");
+                    if (!resp.ok) throw new Error("Server Download Failed");
                     const newHtml = await resp.text();
 
+                    if (!newHtml || newHtml.length < 100) throw new Error("Incomplete Package Downloaded");
+
                     UpdateUI.update(70, "Patching Local Files");
+                    // Using direct path resolution to avoid locking issues
                     const localPath = path.join(__dirname, 'index.html');
+
+                    // Backup old file just in case
+                    try { fs.copyFileSync(localPath, localPath + '.bak'); } catch (e) { }
+
                     fs.writeFileSync(localPath, newHtml);
 
                     UpdateUI.update(95, "Restarting Application...");
@@ -2597,8 +2557,9 @@ F8::ExitApp
                         location.reload();
                     }, 1500);
                 } catch (e) {
-                    UpdateUI.update(100, "Update Aborted");
-                    setTimeout(() => UpdateUI.hide(), 2000);
+                    console.error("Update Error:", e);
+                    UpdateUI.update(100, "Update Aborted: " + e.message);
+                    setTimeout(() => UpdateUI.hide(), 4000);
                 }
             },
 
