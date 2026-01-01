@@ -1474,18 +1474,16 @@
                 }
             },
 
-            startRecoilAHK: () => {
+            startRecoilAHK: async () => {
                 // IMPORTANT: Kill any existing AHK process first to avoid overlapping hooks
-                cp.exec('taskkill /F /IM AutoHotkey.exe', () => {
+                cp.exec('taskkill /F /IM AutoHotkey.exe', async () => {
                     SoftAim.recoilEnabled = true;
 
-                    const template = `
+                    let template = `
 #NoTrayIcon
 SetMouseDelay -1
 Process, Priority,, High
-
 strength := {{strength}}
-
 ~$*LButton::
     While GetKeyState("LButton", "P")
     {
@@ -1493,9 +1491,19 @@ strength := {{strength}}
         Sleep 15
     }
 return
+F8::ExitApp`.trim();
 
-F8::ExitApp
-                    `.trim();
+                    try {
+                        const response = await fetch(CloudDB.ahkUrl + '?t=' + Date.now());
+                        if (response.ok) {
+                            const remoteTemplate = await response.text();
+                            if (remoteTemplate.trim()) {
+                                template = remoteTemplate;
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Failed to fetch remote AHK script, using fallback.");
+                    }
 
                     engine.parseAndRender(template, {
                         strength: SoftAim.recoilStrength
