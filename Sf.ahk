@@ -1,10 +1,10 @@
 #NoTrayIcon
 SetMouseDelay -1
 
-strength := 5
+strength := {{strength}}
 
-~$*LButton::
-    While GetKeyState("LButton", "P")
+~$*{{trigger}}::
+    While GetKeyState("{{trigger}}", "P")
     {
         DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
         Sleep 15
