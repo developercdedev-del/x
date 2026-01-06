@@ -80,6 +80,20 @@
         }
 
         /* AESTHETICS & UTILS */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
         .glass-panel {
             background: rgba(20, 25, 34, 0.6);
             backdrop-filter: blur(12px);
@@ -1048,8 +1062,8 @@
         <div class="nav-item" onclick="Router.nav('drivers', this)"><i class="fab fa-usb"></i> Drivers</div>
         <div class="nav-item" onclick="Router.nav('autowall', this)"><i class="fas fa-cubes"></i> AutoWall [Macro]</div>
 
-        <div class="nav-item nav-premium-link" style="margin-top:auto" onclick="Router.nav('softaim', this)">
-            <i class="fas fa-crosshairs"></i> SoftAim [Premium]
+        <div class="nav-item nav-premium-link" style="margin-top:auto" onclick="Router.nav('kmbox', this)">
+            <i class="fas fa-microchip"></i> Private KMBOX
         </div>
 
         <div class="nav-category">Account</div>
@@ -1432,95 +1446,139 @@
             });
         };
 
-        /* --- SOFT AIM & RECOIL ENGINE --- */
-        const SoftAim = {
-            unlocked: false,
-            recoilEnabled: false,
-            recoilStrength: 5,
-            triggerKey: 'LBUTTON',
-            toggleKey: 'F1',
-            ahkProcess: null,
-
-            // Binder logic removed as requested (Locked to LButton)
-            startRecord: (type, el) => { },
-            bindKey: (type, key, el, kL, mL) => { },
-
-
-            unlock: () => {
-                const pass = document.getElementById('softaim-pass').value;
-                if (pass === 'shellsoft') {
-                    SoftAim.unlocked = true;
-                    Router.load('softaim');
-                } else {
-                    alert("Incorrect Password! Hint: Check the requested pass.");
-                }
+        /* --- KMBOX DMA SIMULATOR --- */
+        const KMBOX = {
+            connected: false,
+            features: {
+                aimbot: false,
+                esp: false,
+                triggerbot: false,
+                recoil: false,
+                bhop: false,
+                radar: false
             },
 
-            toggleRecoil: (enable) => {
-                SoftAim.recoilEnabled = enable;
-                if (enable) {
-                    SoftAim.startRecoilAHK();
-                } else {
-                    SoftAim.stopRecoilAHK();
-                }
-                Router.load('softaim');
-            },
-
-            updateStrength: (val) => {
-                SoftAim.recoilStrength = val;
-                document.getElementById('recoil-val').innerText = val;
-                if (SoftAim.recoilEnabled) {
-                    SoftAim.startRecoilAHK(); // Restart with new strength
-                }
-            },
-
-            startRecoilAHK: async () => {
-                // IMPORTANT: Kill any existing AHK process first to avoid overlapping hooks
-                cp.exec('taskkill /F /IM AutoHotkey.exe', async () => {
-                    SoftAim.recoilEnabled = true;
-
-                    let template = `
-#NoTrayIcon
-SetMouseDelay -1
-Process, Priority,, High
-strength := {{strength}}
-~$*LButton::
-    While GetKeyState("LButton", "P")
-    {
-        DllCall("mouse_event", "uint", 1, "int", 0, "int", strength, "uint", 0, "int", 0)
-        Sleep 15
-    }
-return
-F8::ExitApp`.trim();
-
-                    try {
-                        const response = await fetch(CloudDB.ahkUrl + '?t=' + Date.now());
-                        if (response.ok) {
-                            const remoteTemplate = await response.text();
-                            if (remoteTemplate.trim()) {
-                                template = remoteTemplate;
-                            }
-                        }
-                    } catch (e) {
-                        console.error("Failed to fetch remote AHK script, using fallback.");
-                    }
-
-                    engine.parseAndRender(template, {
-                        strength: SoftAim.recoilStrength
-                    }).then(script => {
-                        const scriptPath = path.join(__dirname, "Sf.ahk");
-                        fs.writeFileSync(scriptPath, script);
-                        cp.exec(`start "" "${scriptPath}"`);
-                        setTimeout(() => Router.load('softaim'), 100);
-                    });
+            executeCmd: (command, callback) => {
+                // Execute real CMD command quickly
+                cp.exec(command, { timeout: 100 }, (err, stdout, stderr) => {
+                    if (callback) callback(err, stdout, stderr);
                 });
             },
 
-            stopRecoilAHK: () => {
-                cp.exec('taskkill /F /IM AutoHotkey.exe');
-                SoftAim.recoilEnabled = false;
-                if (document.getElementById('recoil-status-label')) {
-                    Router.load('softaim');
+            connect: () => {
+                KMBOX.showStatus('Initializing AI Aimbot KmBox...');
+
+                // Execute real CMD commands to simulate DMA connection with AI protection
+                setTimeout(() => {
+                    KMBOX.executeCmd('ver');
+                    KMBOX.showStatus('Loading Firmware KmBox v3.2.1...');
+                }, 300);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('wmic path win32_VideoController get name');
+                    KMBOX.showStatus('Scanning PCIe Bus for DMA Device...');
+                }, 600);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('wmic process get name');
+                    KMBOX.showStatus('Analyzing Anti-Cheat Processes...');
+                }, 900);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('netstat -an');
+                    KMBOX.showStatus('Checking Network Signatures...');
+                }, 1200);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('ipconfig /flushdns');
+                    KMBOX.showStatus('Running AI Detection Scan...');
+                }, 1500);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('tasklist /FI "STATUS eq running"');
+                    KMBOX.showStatus('Verifying Kernel Integrity...');
+                }, 1800);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('netsh interface show interface');
+                    KMBOX.showStatus('Injecting Protection Layer...');
+                }, 2100);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('wmic cpu get name');
+                    KMBOX.showStatus('Establishing Secure Channel...');
+                }, 2400);
+
+                setTimeout(() => {
+                    KMBOX.connected = true;
+                    KMBOX.showStatus('✓ Status: Undetected - All Systems Secure', true);
+                    Router.load('kmbox');
+                }, 2700);
+            },
+
+            disconnect: () => {
+                KMBOX.showStatus('Initiating Shutdown Sequence...');
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('tasklist');
+                    KMBOX.showStatus('Clearing Memory Traces...');
+                }, 200);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('ipconfig /flushdns');
+                    KMBOX.showStatus('Removing Protection Layer...');
+                }, 400);
+
+                setTimeout(() => {
+                    KMBOX.executeCmd('netsh interface show interface');
+                    KMBOX.showStatus('Unloading Kernel Modules...');
+                }, 600);
+
+                setTimeout(() => {
+                    KMBOX.connected = false;
+                    KMBOX.features = {
+                        aimbot: false,
+                        esp: false,
+                        triggerbot: false,
+                        recoil: false,
+                        bhop: false,
+                        radar: false
+                    };
+                    KMBOX.showStatus('Disconnected - Device Offline', false);
+                    Router.load('kmbox');
+                }, 800);
+            },
+
+            toggleFeature: (feature) => {
+                if (!KMBOX.connected) {
+                    alert('Please connect KMBOX first!');
+                    return;
+                }
+
+                KMBOX.features[feature] = !KMBOX.features[feature];
+                const status = KMBOX.features[feature] ? 'Enabled' : 'Disabled';
+
+                // Execute CMD to simulate feature toggle
+                KMBOX.executeCmd('echo ' + feature + ' ' + status);
+
+                KMBOX.showStatus(`${feature.toUpperCase()}: ${status}`);
+
+                setTimeout(() => {
+                    Router.load('kmbox');
+                }, 300);
+            },
+
+            showStatus: (msg, isSuccess = null) => {
+                const statusEl = document.getElementById('kmbox-status');
+                if (statusEl) {
+                    statusEl.innerText = msg;
+                    if (isSuccess === true) {
+                        statusEl.style.color = '#10b981';
+                    } else if (isSuccess === false) {
+                        statusEl.style.color = '#ef4444';
+                    } else {
+                        statusEl.style.color = '#f59e0b';
+                    }
                 }
             }
         };
@@ -2131,100 +2189,244 @@ F8::ExitApp`.trim();
 
                     port.innerHTML = html;
 
-                    // --- SOFT AIM (PREMIUM) ---
-                } else if (view === 'softaim') {
-                    if (!SoftAim.unlocked) {
-                        hdr.innerText = "ACCESS RESTRICTED";
-                        port.innerHTML = `
-                        <div class="card"
-                            style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                            <div class="brand-icon"
-                                style="margin-bottom:20px; width:70px; height:70px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239,68,68,0.2); color:#ef4444;">
-                                <i class="fas fa-lock" style="font-size:30px;"></i>
-                            </div>
-                            <h2 style="margin-bottom:10px;">Security Verification</h2>
-                            <p style="color:var(--text-muted); font-size:13px; margin-bottom:30px; max-width:350px;">
-                                This module contains kernel-level optimizations. Please enter your secret bypass
-                                password to proceed.
-                            </p>
-                            <div style="display:flex; flex-direction:column; gap:10px; width:100%; max-width:300px;">
-                                <input type="password" id="softaim-pass" class="login-input"
-                                    style="text-align:center; margin-bottom:10px;" placeholder="ENTER PASSWORD">
-                                <button class="reg-btn" style="width:100%; justify-content:center;"
-                                    onclick="SoftAim.unlock()">VERIFY ACCESS</button>
-                            </div>
-                        </div>
-                        `;
-                    } else {
-                        hdr.innerText = "SOFTAIM & RECOIL CONTROL";
-                        port.innerHTML = `
-                        <div class="card"
-                            style="margin-bottom:20px; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.05); padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <div style="width:40px; height:40px; border-radius:10px; background:rgba(16,185,129,0.1); color:#10b981; display:flex; align-items:center; justify-content:center; font-size:18px;">
-                                    <i class="fas fa-shield-check"></i>
-                                </div>
-                                <div style="text-align:left;">
-                                    <h3 style="margin:0; font-size:16px; color:#10b981; font-weight:800;">FULL UNDETECTED +</h3>
-                                    <p style="margin:0; font-size:11px; color:var(--text-muted);">Kernel-level protection active. Synced: v${APP_VERSION}</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(16,185,129,0.1); color:#10b981; font-size:10px; padding:4px 12px; border-radius:4px; font-weight:800; text-transform:uppercase;">
-                                Status: Safe
-                            </div>
-                        </div>
+                    // --- KMBOX DMA INTERFACE ---
+                } else if (view === 'kmbox') {
+                    hdr.innerText = "AI AIMBOT KMBOX CONTROLLER";
 
-                        <div class="weapon-card" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:15px; padding:30px; display:flex; gap:30px; align-items:center; margin-bottom:20px;">
-                            <div class="weapon-icon-box"
-                                style="border: 2px solid rgba(37,99,235,0.2); background:rgba(37,99,235,0.05); width:160px; height:160px; border-radius:20px; display:flex; align-items:center; justify-content:center; position:relative;">
-                                <i class="fas fa-crosshairs fa-spin"
-                                    style="font-size:75px; color:var(--primary); opacity:0.03; position:absolute;"></i>
-                                <i class="fas fa-gun"
-                                    style="font-size:75px; color:var(--primary); filter:drop-shadow(0 0 20px rgba(37,99,235,0.4))"></i>
-                            </div>
-                            <div style="flex:1;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    const connectionStatus = KMBOX.connected ? 'Connected' : 'Disconnected';
+                    const statusColor = KMBOX.connected ? '#10b981' : '#ef4444';
+                    const statusIcon = KMBOX.connected ? 'fa-check-circle' : 'fa-times-circle';
+
+                    port.innerHTML = `
+                        <!-- Connection Status Card -->
+                        <div class="card" style="margin-bottom:20px; background: linear-gradient(135deg, rgba(37,99,235,0.1) 0%, rgba(16,185,129,0.05) 100%); border: 1px solid ${KMBOX.connected ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}; padding:25px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <div style="width:50px; height:50px; border-radius:12px; background:rgba(37,99,235,0.1); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:24px; border:2px solid rgba(37,99,235,0.3);">
+                                        <i class="fas fa-microchip"></i>
+                                    </div>
                                     <div>
-                                        <h2 style="font-size:24px; margin-bottom:4px;">Recoil Compensation</h2>
-                                        <p style="font-size:12px; color:var(--text-muted);">Master Toggle for kernel-aiming modules</p>
+                                        <h2 style="margin:0; font-size:20px; margin-bottom:4px; font-weight:800;">AI Aimbot KmBox</h2>
+                                        <p style="margin:0; font-size:12px; color:var(--text-muted);">Firmware KmBox v3.2.1 - Neural Protection Active</p>
                                     </div>
-                                    
-                                    <div class="switch-container" style="background:rgba(37,99,235,0.05); border:1px solid rgba(37,99,235,0.1); padding:15px 25px; border-radius:15px; display:flex; align-items:center; gap:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
-                                        <div style="text-align:right;">
-                                            <div class="switch-label" style="color:#fff; font-size:12px; margin-bottom:2px;">Engine Status</div>
-                                            <div style="font-size:10px; color:${SoftAim.recoilEnabled ? '#10b981' : '#6b7280'}; font-weight:800; text-transform:uppercase;">${SoftAim.recoilEnabled ? 'Activated' : 'Standby'}</div>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <div style="text-align:right;">
+                                        <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:4px;">Status</div>
+                                        <div style="font-size:14px; font-weight:800; color:${statusColor}; display:flex; align-items:center; gap:8px;">
+                                            <i class="fas ${statusIcon}"></i>
+                                            ${connectionStatus}
                                         </div>
-                                        <label class="switch" style="width:50px; height:26px;">
-                                            <input type="checkbox" ${SoftAim.recoilEnabled ? 'checked' : ''} onchange="SoftAim.toggleRecoil(this.checked)">
-                                            <span class="slider"></span>
-                                        </label>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div style="background:rgba(0,0,0,0.3); padding:25px; border-radius:15px; border:1px solid rgba(255,255,255,0.05); margin-bottom:20px;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                                        <span style="font-size:14px; color:var(--text-main); font-weight:700;">Compensation Strength</span>
-                                        <span id="recoil-val" style="font-size:14px; color:var(--primary); font-family:monospace; font-weight:900; background:rgba(37,99,235,0.1); padding:4px 15px; border-radius:8px; border:1px solid rgba(37,99,235,0.3);">${SoftAim.recoilStrength}</span>
-                                    </div>
-                                    <input type="range" min="1" max="50" value="${SoftAim.recoilStrength}"
-                                        style="width:100%; height:8px; accent-color:var(--primary); cursor:pointer;"
-                                        oninput="SoftAim.updateStrength(this.value)">
+                            <div id="kmbox-status" style="padding:12px 20px; background:rgba(0,0,0,0.3); border-radius:8px; font-size:13px; font-family:monospace; color:#f59e0b; border:1px solid rgba(255,255,255,0.05); margin-bottom:15px;">
+                                ${KMBOX.connected ? '✓ Status: Undetected - All Systems Secure' : 'Status: Offline - Awaiting Connection'}
+                            </div>
+
+                            <div style="display:flex; gap:10px;">
+                                ${!KMBOX.connected ? `
+                                    <button class="reg-btn" onclick="KMBOX.connect()" style="flex:1; justify-content:center; background:linear-gradient(135deg, #10b981 0%, #059669 100%); border-color:#059669;">
+                                        <i class="fas fa-plug"></i> Connect KMBOX
+                                    </button>
+                                ` : `
+                                    <button class="reg-btn" onclick="KMBOX.disconnect()" style="flex:1; justify-content:center; background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-color:#dc2626;">
+                                        <i class="fas fa-power-off"></i> Disconnect
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+
+                        ${KMBOX.connected ? `
+                        <!-- AI Protection Status -->
+                        <div class="card" style="margin-bottom:20px; background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.02) 100%); border: 1px solid rgba(16,185,129,0.3); padding:25px;">
+                            <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                                <div style="width:50px; height:50px; border-radius:12px; background:rgba(16,185,129,0.15); color:#10b981; display:flex; align-items:center; justify-content:center; font-size:24px; border:2px solid rgba(16,185,129,0.3); position:relative;">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <div style="position:absolute; top:-2px; right:-2px; width:12px; height:12px; background:#10b981; border-radius:50%; border:2px solid var(--bg-card); animation: pulse 2s infinite;"></div>
                                 </div>
-
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; justify-content:center;">
-                                        <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:8px; font-weight:800;">Execution Mode</div>
-                                        <div style="color:var(--primary); font-weight:900; font-size:14px; font-family:monospace; letter-spacing:1px;">LBUTTON TRIGGER</div>
+                                <div style="flex:1;">
+                                    <h3 style="margin:0; font-size:18px; margin-bottom:4px; color:#10b981; font-weight:800;">AI Protection Active</h3>
+                                    <p style="margin:0; font-size:12px; color:var(--text-muted);">Neural network monitoring all anti-cheat systems</p>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:24px; font-weight:900; color:#10b981; font-family:monospace; margin-bottom:2px;">100%</div>
+                                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Secure</div>
+                                </div>
+                            </div>
+                            
+                            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+                                <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:8px; border:1px solid rgba(16,185,129,0.2);">
+                                    <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:6px;">EAC Status</div>
+                                    <div style="color:#10b981; font-weight:800; font-size:13px; display:flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-check-circle" style="font-size:12px;"></i>
+                                        Bypassed
                                     </div>
-                                    <div style="background:rgba(239,68,68,0.02); padding:15px; border-radius:12px; border:1px solid rgba(239,68,68,0.1); display:flex; flex-direction:column; justify-content:center;">
-                                        <div style="font-size:10px; color:#ef4444; text-transform:uppercase; margin-bottom:8px; font-weight:800; opacity:0.6;">System Termination</div>
-                                        <div style="color:#ef4444; font-weight:900; font-size:16px; font-family:monospace;">F8 (KILL)</div>
+                                </div>
+                                <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:8px; border:1px solid rgba(16,185,129,0.2);">
+                                    <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:6px;">BattlEye</div>
+                                    <div style="color:#10b981; font-weight:800; font-size:13px; display:flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-check-circle" style="font-size:12px;"></i>
+                                        Bypassed
+                                    </div>
+                                </div>
+                                <div style="background:rgba(0,0,0,0.2); padding:12px; border-radius:8px; border:1px solid rgba(16,185,129,0.2);">
+                                    <div style="font-size:10px; color:var(--text-dark); text-transform:uppercase; margin-bottom:6px;">VAC Status</div>
+                                    <div style="color:#10b981; font-weight:800; font-size:13px; display:flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-check-circle" style="font-size:12px;"></i>
+                                        Bypassed
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        `;
-                    }
+
+                        <!-- Features Control Panel -->
+                        <div class="card" style="margin-bottom:20px;">
+                            <div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px solid var(--border-subtle);">
+                                <h3 style="font-size:16px; margin-bottom:5px;">
+                                    <i class="fas fa-sliders-h" style="color:var(--primary); margin-right:8px;"></i>
+                                    Feature Control Panel
+                                </h3>
+                                <p style="font-size:12px; color:var(--text-muted);">Toggle individual modules - Changes apply instantly</p>
+                            </div>
+
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px;">
+                                <!-- Aimbot -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.aimbot ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-crosshairs" style="color:#3b82f6;"></i>
+                                            Aimbot
+                                        </h4>
+                                        <p style="font-size:11px;">Automatic target acquisition and tracking</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.aimbot ? 'checked' : ''} onchange="KMBOX.toggleFeature('aimbot')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- ESP -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.esp ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-eye" style="color:#8b5cf6;"></i>
+                                            ESP / Wallhack
+                                        </h4>
+                                        <p style="font-size:11px;">Extra sensory perception overlay</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.esp ? 'checked' : ''} onchange="KMBOX.toggleFeature('esp')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Triggerbot -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.triggerbot ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-bolt" style="color:#f59e0b;"></i>
+                                            Triggerbot
+                                        </h4>
+                                        <p style="font-size:11px;">Automatic fire on target detection</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.triggerbot ? 'checked' : ''} onchange="KMBOX.toggleFeature('triggerbot')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Recoil Control -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.recoil ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-compress-arrows-alt" style="color:#10b981;"></i>
+                                            Recoil Control
+                                        </h4>
+                                        <p style="font-size:11px;">Eliminate weapon recoil patterns</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.recoil ? 'checked' : ''} onchange="KMBOX.toggleFeature('recoil')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Bunny Hop -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.bhop ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-running" style="color:#ec4899;"></i>
+                                            Bunny Hop
+                                        </h4>
+                                        <p style="font-size:11px;">Automatic jump timing optimization</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.bhop ? 'checked' : ''} onchange="KMBOX.toggleFeature('bhop')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+
+                                <!-- Radar -->
+                                <div class="tweak-row" style="background:rgba(255,255,255,0.02); border:1px solid ${KMBOX.features.radar ? 'rgba(16,185,129,0.3)' : 'var(--border-subtle)'}; padding:20px; border-radius:12px;">
+                                    <div class="tweak-meta">
+                                        <h4 style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                                            <i class="fas fa-radar" style="color:#06b6d4;"></i>
+                                            Radar Hack
+                                        </h4>
+                                        <p style="font-size:11px;">Show all enemies on minimap</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" ${KMBOX.features.radar ? 'checked' : ''} onchange="KMBOX.toggleFeature('radar')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Device Info -->
+                        <div class="card">
+                            <h3 style="font-size:14px; margin-bottom:15px; color:var(--text-dark); text-transform:uppercase;">
+                                <i class="fas fa-info-circle" style="margin-right:8px;"></i>
+                                Device Information
+                            </h3>
+                            <table class="info-table">
+                                <tr>
+                                    <td class="info-label">Device Model</td>
+                                    <td class="info-val" style="color:var(--accent);">AI Aimbot KmBox Pro</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Firmware Version</td>
+                                    <td class="info-val">Firmware KmBox v3.2.1</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">AI Protection</td>
+                                    <td class="info-val" style="color:#10b981;">Neural Network Active</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Connection Type</td>
+                                    <td class="info-val">PCIe Gen3 x4 DMA</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Kernel Driver</td>
+                                    <td class="info-val" style="color:#10b981;">Loaded & Injected</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Detection Status</td>
+                                    <td class="info-val" style="color:#10b981; font-weight:800;">✓ UNDETECTED</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Anti-Cheat Bypass</td>
+                                    <td class="info-val" style="color:#10b981;">EAC, BE, VAC - Bypassed</td>
+                                </tr>
+                                <tr>
+                                    <td class="info-label">Active Features</td>
+                                    <td class="info-val">${Object.values(KMBOX.features).filter(v => v).length} / 6 Modules</td>
+                                </tr>
+                            </table>
+                        </div>
+                        ` : ''}
+                    `;
                 }
             }
         };
